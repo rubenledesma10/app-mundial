@@ -1,6 +1,10 @@
 from datetime import date
 from app import app
-from models.models import db, NationalTeam, Player
+from models.db import db
+from models.national_team import NationalTeam
+from models.person import Person
+from models.player import Player
+from models.user import User
 
 def seed_database():
     print("⏳ Iniciando la carga de datos (Seeding)...")

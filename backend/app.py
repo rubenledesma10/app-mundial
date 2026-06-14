@@ -1,9 +1,13 @@
 from flask import Flask
 from flask_cors import CORS
 from config.config import Config
-from models.models import db
 from flask_jwt_extended import JWTManager
-from models.models import Person, NationalTeam, Player, User
+from models.db import db
+from models.person import Person
+from models.national_team import NationalTeam
+from models.player import Player
+from models.user import User
+
 import os
 
 app= Flask(__name__)
@@ -16,7 +20,10 @@ db.init_app(app)
 #aca van los bluesprints
 
 with app.app_context():
-    from models.models import Person, NationalTeam, Player, User
+    from models.national_team import NationalTeam
+    from models.person import Person
+    from models.player import Player
+    from models.user import User
     db.create_all()
 
 if __name__ == '__main__':
