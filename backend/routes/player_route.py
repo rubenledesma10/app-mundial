@@ -37,3 +37,20 @@ def create_player():
     db.session.add(player)
     db.session.commit()
     return jsonify(player.to_dict()), 201
+
+@player_bp.route('/api/players/<int:id>', methods=['DELETE'])
+def delete_player(id):
+    player = Player.query.get(id)
+    
+    if not player:
+        return jsonify({
+            "Message": "Player not found"
+        }), 404
+    
+    db.session.delete(player)
+    db.session.commit()
+    
+    return jsonify({
+        "Message": "Player deleted successfully"
+    }), 200
+    
