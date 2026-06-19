@@ -6,7 +6,7 @@ player_bp = Blueprint('player_bp', __name__)
 
 @player_bp.route('/api/players', methods=['GET'])
 def get_players():
-    players = Player.query.all
+    players = Player.query.all()
     return jsonify(
         [player.to_dict() for player in players]
     ),200
