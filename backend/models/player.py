@@ -47,10 +47,6 @@ class Player(Person): #hereda de persona
         "is_captain": self.is_captain,
         "weight": self.weight,
         "height": self.height,
-        "national_team": {
-            "id": self.national_team.id_national_teams,
-            "country": self.national_team.country,
-            "technical_director": self.national_team.technical_director,
-            "group": self.national_team.group
+        "id": self.national_team.id_national_teams
         }
-    }
+    
