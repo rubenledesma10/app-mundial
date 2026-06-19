@@ -54,3 +54,34 @@ def delete_player(id):
         "Message": "Player deleted successfully"
     }), 200
     
+@player_bp.route('/api/players/<int:id>', methods=['PUT'])
+def update_player(id):
+    
+    player = Player.query.get(id)
+    
+    if not player:
+        return jsonify({
+            "Message": "Player not found"
+        }), 404
+    
+    data = request.get_json()
+    
+    player.first_name = data['first_name']
+    player.last_name = data['last_name']
+    player.birthdate = datetime.strptime(data['birthdate'],'%Y-%m-%d').date()
+    player.photo = data['photo']
+    player.id_national_teams = data['id_national_teams']
+    player.position = data['position']
+    player.tshirt_number = data['tshirt_number']
+    player.current_club = data['current_club']
+    player.goals = data['goals']
+    player.assists = data['assists']
+    player.yellow_card = data['yellow_card']
+    player.red_card = data['red_card']
+    player.is_captain = data['is_captain']
+    player.weight = data['weight']
+    player.height = data['height']
+    
+    db.session.commit()
+    
+    return jsonify(player.to_dict()), 200
