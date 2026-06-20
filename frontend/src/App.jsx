@@ -8,8 +8,18 @@ function App() {
   useEffect(() => {
     let url = 'http://127.0.0.1:5000/api/players';
 
+    const params = [];
+
     if (name) {
-      url = `http://127.0.0.1:5000/api/players/search?name=${name}`;
+      params.push(`name=${name}`)
+    }
+
+    if (country) {
+      params.push(`country=${country}`)
+    }
+
+    if (params.length > 0){
+      url = `http://127.0.0.1:5000/api/players/search?${params.join('&')}`;
     }
 
     fetch(url)
@@ -18,12 +28,12 @@ function App() {
         setPlayers(data);
       })
       .catch((error) => console.error(error));
-  }, [name]);
+  }, [name,country]);
 
   return (
     <>
       <h1>Mundial 2026</h1>
-      <PlayerFilters name={name} setName={setName} />
+      <PlayerFilters name={name} setName={setName} country={country} setCountry={setCountry}/>
       <p>Jugadores: {players.length}</p>
     </>
   );
