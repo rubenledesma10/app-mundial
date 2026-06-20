@@ -7,7 +7,8 @@ player_bp = Blueprint('player_bp', __name__)
 
 @player_bp.route('/api/players', methods=['GET'])
 def get_players():
-    players = Player.query.all()
+    players = Player.query.filter_by(is_active=True).all()
+    
     return jsonify(
         [player.to_dict() for player in players]
     ),200
@@ -47,11 +48,11 @@ def delete_player(id):
             "Message": "Player not found"
         }), 404
     
-    db.session.delete(player)
+    player.is_active = False
     db.session.commit()
     
     return jsonify({
-        "Message": "Player deleted successfully"
+        "Message": "Player deactivated successfully"
     }), 200
     
 @player_bp.route('/api/players/<int:id>', methods=['PUT'])
