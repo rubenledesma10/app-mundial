@@ -5,12 +5,35 @@ from datetime import datetime
 
 player_bp = Blueprint('player_bp', __name__)
 
+#Traemos todos los jugadores
+
 @player_bp.route('/api/players', methods=['GET'])
 def get_players():
-    players = Player.query.all()
+    players = Player.query.filter_by(is_active=True).all()
+    
     return jsonify(
         [player.to_dict() for player in players]
     ),200
+
+#Traemos jugadores solo por ID
+
+@player_bp.route("/api/players/<int:id>", methods=['GET'])
+def get_player_by_id(id):
+
+    player = Player.query.filter_by(
+        id=id,
+        is_active=True
+    ).first()
+    
+    if not player:
+        return jsonify({
+            "Messagge: Player not found"
+        }), 404
+    
+    return jsonify(
+        player.to_dict()
+    ),200
+# Agregamos un nuevo jugador
     
 @player_bp.route('/api/players', methods=['POST'])
 def create_player():
@@ -38,6 +61,8 @@ def create_player():
     db.session.commit()
     return jsonify(player.to_dict()), 201
 
+#Eliminamos un jugador por su ID
+
 @player_bp.route('/api/players/<int:id>', methods=['DELETE'])
 def delete_player(id):
     player = Player.query.get(id)
@@ -47,13 +72,15 @@ def delete_player(id):
             "Message": "Player not found"
         }), 404
     
-    db.session.delete(player)
+    player.is_active = False
     db.session.commit()
     
     return jsonify({
-        "Message": "Player deleted successfully"
+        "Message": "Player deactivated successfully"
     }), 200
-    
+
+#Editamos un jugador por su ID
+
 @player_bp.route('/api/players/<int:id>', methods=['PUT'])
 def update_player(id):
     
