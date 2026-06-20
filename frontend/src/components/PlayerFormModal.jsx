@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -31,7 +31,12 @@ const initialForm = {
 }
 
 function PlayerFormModal({ open, onClose, onSave, playerSelected }) {
-  const [form, setForm] = useState(playerSelected || initialForm)
+  const [form, setForm] = useState(initialForm)
+
+  useEffect(() => {
+    const formData = playerSelected || initialForm
+    setForm(formData)
+  }, [playerSelected])
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target
