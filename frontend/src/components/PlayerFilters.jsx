@@ -1,6 +1,23 @@
-import {TextField,FormControl,InputLabel,Select,MenuItem,} from '@mui/material';
+import {
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from '@mui/material';
 
-function PlayerFilters({ name, setName, country, setCountry, captain, setCaptain}) {
+function PlayerFilters({
+  name,
+  setName,
+  country,
+  setCountry,
+  captain,
+  setCaptain,
+  minGoals,
+  setMinGoals,
+  maxGoals,
+  setMaxGoals,
+}) {
   return (
     <>
       <h2>Filtrar</h2>
@@ -15,7 +32,7 @@ function PlayerFilters({ name, setName, country, setCountry, captain, setCaptain
 
       <p>Buscando: {name}</p>
 
-    <FormControl fullWidth sx={{ mt: 2 }}>
+      <FormControl fullWidth sx={{ mt: 2 }}>
         <InputLabel>Selección</InputLabel>
 
         <Select
@@ -29,23 +46,39 @@ function PlayerFilters({ name, setName, country, setCountry, captain, setCaptain
 
           <MenuItem value="Portugal">Portugal</MenuItem>
         </Select>
-    </FormControl>
+      </FormControl>
 
-    <FormControl fullWidth sx={{ mt: 3}}>
+      <FormControl fullWidth sx={{ mt: 3 }}>
         <InputLabel>Capitan</InputLabel>
-        <Select 
-            value={captain}
-            label="Captain"
-            onChange={(e) => setCaptain(e.target.value)}
+        <Select
+          value={captain}
+          label="Captain"
+          onChange={(e) => setCaptain(e.target.value)}
         >
-            <MenuItem>Todos</MenuItem>
+          <MenuItem>Todos</MenuItem>
 
-            <MenuItem value="true">Si</MenuItem> 
-            
-            <MenuItem value="false">No</MenuItem> 
+          <MenuItem value="true">Si</MenuItem>
 
+          <MenuItem value="false">No</MenuItem>
         </Select>
       </FormControl>
+
+      <TextField
+        label="Goles minimos"
+        type="number"
+        fullWidth
+        sx={{ mt: 3 }}
+        value={minGoals}
+        onChange={(e) => setMinGoals(e.target.value)}
+      />
+      <TextField
+        label="Goles maximos"
+        type="number"
+        fullWidth
+        sx={{ mt: 3 }}
+        value={maxGoals}
+        onChange={(e) => setMaxGoals(e.target.value)}
+      />
     </>
   );
 }

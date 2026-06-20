@@ -5,26 +5,37 @@ function App() {
   const [players, setPlayers] = useState([]);
   const [name, setName] = useState('');
   const [country, setCountry] = useState('');
-  const [captain, setCaptain] = useState('')
+  const [captain, setCaptain] = useState('');
+  const [minGoals, setMinGoals] = useState('');
+  const [maxGoals, setMaxGoals] = useState('');
+
   useEffect(() => {
-    let url = 'http://127.0.0.1:5000/api/players';
+    let url = 'http://127.0.0.1:5000/api/players/search';
 
     const params = [];
 
     if (name) {
-      params.push(`name=${name}`)
+      params.push(`name=${name}`);
     }
 
     if (country) {
-      params.push(`country=${country}`)
-    }
-
-    if (params.length > 0){
-      url = `http://127.0.0.1:5000/api/players/search?${params.join('&')}`;
+      params.push(`country=${country}`);
     }
 
     if (captain) {
       params.push(`captain=${captain}`);
+    }
+
+    if (minGoals) {
+      params.push(`min_goals=${minGoals}`);
+    }
+
+    if (maxGoals) {
+      params.push(`max_goals=${maxGoals}`);
+    }
+
+    if (params.length > 0) {
+      url = `http://127.0.0.1:5000/api/players/search?${params.join('&')}`;
     }
 
     fetch(url)
@@ -33,14 +44,23 @@ function App() {
         setPlayers(data);
       })
       .catch((error) => console.error(error));
-    }, [name,country,captain]); 
-
+  }, [name, country, captain, minGoals, maxGoals]);
 
   return (
     <>
       <h1>Mundial 2026</h1>
-      <PlayerFilters name={name} setName={setName} country={country} setCountry={setCountry}
-      captain setCaptain={captain}/>
+      <PlayerFilters
+        name={name}
+        setName={setName}
+        country={country}
+        setCountry={setCountry}
+        captain={captain}
+        setCaptain={setCaptain}
+        minGoals={minGoals}
+        setMinGoals={setMinGoals}
+        maxGoals={maxGoals}
+        setMaxGoals={setMaxGoals}
+      />
       <p>Jugadores: {players.length}</p>
     </>
   );
