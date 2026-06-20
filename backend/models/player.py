@@ -44,6 +44,7 @@ class Player(Person): #hereda de persona
         "assists": self.assists,
         "yellow_card": self.yellow_card,
         "red_card": self.red_card,
+        "total_cards": self.yellow_card + self.red_card,
         "is_captain": self.is_captain,
         "weight": self.weight,
         "height": self.height,
