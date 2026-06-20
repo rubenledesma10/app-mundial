@@ -1,10 +1,10 @@
-
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useAuth } from '../hooks/useAuth';
 import { useNavigate, Outlet } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+
 
 const ProtectedRoute = ({ allowedRoles }) => {
-    const { token, user } = useContext(AuthContext);
+    const { token, user } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
