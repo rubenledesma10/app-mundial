@@ -8,6 +8,8 @@ function App() {
   const [captain, setCaptain] = useState('');
   const [minGoals, setMinGoals] = useState('');
   const [maxGoals, setMaxGoals] = useState('');
+  const [minHeight, setMinHeight] = useState('');
+  const [maxHeight, setMaxHeight] = useState('');
 
   useEffect(() => {
     let url = 'http://127.0.0.1:5000/api/players/search';
@@ -34,6 +36,14 @@ function App() {
       params.push(`max_goals=${maxGoals}`);
     }
 
+    if (minHeight) {
+      params.push(`min_height=${minHeight}`);
+    }
+
+    if (maxHeight) {
+      params.push(`max_height=${maxHeight}`);
+    }
+
     if (params.length > 0) {
       url = `http://127.0.0.1:5000/api/players/search?${params.join('&')}`;
     }
@@ -44,7 +54,7 @@ function App() {
         setPlayers(data);
       })
       .catch((error) => console.error(error));
-  }, [name, country, captain, minGoals, maxGoals]);
+  }, [name, country, captain, minGoals, maxGoals, minHeight, maxHeight]);
 
   return (
     <>
@@ -60,6 +70,10 @@ function App() {
         setMinGoals={setMinGoals}
         maxGoals={maxGoals}
         setMaxGoals={setMaxGoals}
+        minHeight={minHeight}
+        setMinHeight={setMinHeight}
+        maxHeight={maxHeight}
+        setMaxHeight={setMaxHeight}
       />
       <p>Jugadores: {players.length}</p>
     </>

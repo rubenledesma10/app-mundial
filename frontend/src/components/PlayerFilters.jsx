@@ -17,6 +17,10 @@ function PlayerFilters({
   setMinGoals,
   maxGoals,
   setMaxGoals,
+  minHeight,
+  setMinHeight,
+  maxHeight,
+  setMaxHeight,
 }) {
   return (
     <>
@@ -78,6 +82,23 @@ function PlayerFilters({
         sx={{ mt: 3 }}
         value={maxGoals}
         onChange={(e) => setMaxGoals(e.target.value)}
+      />
+      <TextField
+        label="Altura mínima"
+        type="number"
+        fullWidth
+        sx={{ mt: 3 }}
+        value={minHeight}
+        onChange={(e) => setMinHeight(e.target.value)}
+      />
+
+      <TextField
+        label="Altura máxima"
+        type="number"
+        fullWidth
+        sx={{ mt: 3 }}
+        value={maxHeight}
+        onChange={(e) => setMaxHeight(e.target.value)}
       />
     </>
   );
