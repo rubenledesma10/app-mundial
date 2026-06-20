@@ -4,6 +4,8 @@ from models.db import db
 from datetime import datetime
 from models.national_team import NationalTeam
 from sqlalchemy import or_
+from utils.decorators import admin_required
+
 player_bp = Blueprint('player_bp', __name__)
 
 #Traemos todos los jugadores
@@ -37,6 +39,7 @@ def get_player_by_id(id):
 # Agregamos un nuevo jugador
     
 @player_bp.route('/api/players', methods=['POST'])
+@admin_required()
 def create_player():
     data = request.get_json()
     
@@ -65,6 +68,7 @@ def create_player():
 #Eliminamos un jugador por su ID
 
 @player_bp.route('/api/players/<int:id>', methods=['DELETE'])
+@admin_required()
 def delete_player(id):
     player = Player.query.get(id)
     
@@ -83,6 +87,7 @@ def delete_player(id):
 #Editamos un jugador por su ID
 
 @player_bp.route('/api/players/<int:id>', methods=['PUT'])
+@admin_required()
 def update_player(id):
     
     player = Player.query.get(id)
