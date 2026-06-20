@@ -21,6 +21,10 @@ function PlayerFilters({
   setMinHeight,
   maxHeight,
   setMaxHeight,
+  minAssists,
+  setMinAssists,
+  maxAssists,
+  setMaxAssists,
 }) {
   return (
     <>
@@ -99,6 +103,23 @@ function PlayerFilters({
         sx={{ mt: 3 }}
         value={maxHeight}
         onChange={(e) => setMaxHeight(e.target.value)}
+      />
+      <TextField
+        label="Asistencias mínimas"
+        type="number"
+        fullWidth
+        sx={{ mt: 3 }}
+        value={minAssists}
+        onChange={(e) => setMinAssists(e.target.value)}
+      />
+
+      <TextField
+        label="Asistencias máximas"
+        type="number"
+        fullWidth
+        sx={{ mt: 3 }}
+        value={maxAssists}
+        onChange={(e) => setMaxAssists(e.target.value)}
       />
     </>
   );
