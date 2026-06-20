@@ -4,7 +4,7 @@ import PlayerFilters from './components/PlayerFilters';
 function App() {
   const [players, setPlayers] = useState([]);
   const [name, setName] = useState('');
-
+  const [country, setCountry] = useState('');
   useEffect(() => {
     let url = 'http://127.0.0.1:5000/api/players';
 
