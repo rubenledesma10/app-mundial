@@ -1,7 +1,7 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 // 📦 Importamos los componentes estéticos de Material UI
 import { 
   Container, 
@@ -19,14 +19,13 @@ const Login = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const { login } = useContext(AuthContext); // Sigue usando tu contexto actual
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
-        // Validación corregida con .trim()
         if (!email.trim() || !password.trim()) {
             setError('Por favor, completa todos los campos.');
             return;
@@ -34,8 +33,7 @@ const Login = () => {
 
         try {
             setLoading(true);
-            // Petición a tu backend de Flask
-            const response = await axios.post('http://localhost:5000/api/auth/login', {
+            const response = await axios.post('http://localhost:5000/api/auth/login', { //apunta al endponint del back para iniciar sesion
                 email: email,
                 password: password
             });
@@ -43,12 +41,11 @@ const Login = () => {
             const { token, user } = response.data;
             
             // Guardamos en el cerebro de la app
-            login(token, user);
+            login(token, user); //guardamos la informacion
             
-            // Pasamos el guardián hacia la zona privada
-            navigate('/admin', { replace: true });
+            navigate('/admin', { replace: true }); //podemos acceder
 
-        } catch (err) {
+        } catch (err) { //capturamos el erro del back
             const msgError = err.response?.data?.message || 'Error al conectar con el servidor';
             setError(msgError);
         } finally {
