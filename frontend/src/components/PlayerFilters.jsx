@@ -25,6 +25,10 @@ function PlayerFilters({
   setMinAssists,
   maxAssists,
   setMaxAssists,
+  minCards,
+  setMinCards,
+  maxCards,
+  setMaxCards,
 }) {
   return (
     <>
@@ -120,6 +124,23 @@ function PlayerFilters({
         sx={{ mt: 3 }}
         value={maxAssists}
         onChange={(e) => setMaxAssists(e.target.value)}
+      />
+      <TextField
+        label="Tarjetas mínimas"
+        type="number"
+        fullWidth
+        sx={{ mt: 3 }}
+        value={minCards}
+        onChange={(e) => setMinCards(e.target.value)}
+      />
+
+      <TextField
+        label="Tarjetas máximas"
+        type="number"
+        fullWidth
+        sx={{ mt: 3 }}
+        value={maxCards}
+        onChange={(e) => setMaxCards(e.target.value)}
       />
     </>
   );

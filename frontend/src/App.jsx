@@ -12,6 +12,8 @@ function App() {
   const [maxHeight, setMaxHeight] = useState('');
   const [minAssists, setMinAssists] = useState('');
   const [maxAssists, setMaxAssists] = useState('');
+  const [minCards, setMinCards] = useState('');
+  const [maxCards, setMaxCards] = useState('');
 
   useEffect(() => {
     let url = 'http://127.0.0.1:5000/api/players/search';
@@ -54,6 +56,14 @@ function App() {
       params.push(`max_assists=${maxAssists}`);
     }
 
+    if (minCards) {
+      params.push(`min_cards=${minCards}`);
+    }
+
+    if (maxCards) {
+      params.push(`max_cards=${maxCards}`);
+    }
+
     if (params.length > 0) {
       url = `http://127.0.0.1:5000/api/players/search?${params.join('&')}`;
     }
@@ -74,6 +84,8 @@ function App() {
     maxHeight,
     minAssists,
     maxAssists,
+    minCards,
+    maxCards,
   ]);
 
   return (
@@ -98,6 +110,10 @@ function App() {
         setMinAssists={setMinAssists}
         maxAssists={maxAssists}
         setMaxAssists={setMaxAssists}
+        minCards={minCards}
+        setMinCards={setMinCards}
+        maxCards={maxCards}
+        setMaxCards={setMaxCards}
       />
       <p>Jugadores: {players.length}</p>
     </>
