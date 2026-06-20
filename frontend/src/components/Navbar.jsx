@@ -15,7 +15,7 @@ const Navbar = () => {
         <AppBar position="static" sx={{ backgroundColor: '#1e1e2f' }}>
             <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant="h6" component={Link} to="/" sx={{ textDecoration: 'none', color: '#fff', fontWeight: 'bold' }}>
-                    🏆 Sistema Gestión
+                    🏆 Sistema Gestión de Jugadores y Usuarios
                 </Typography>
 
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>

@@ -32,13 +32,13 @@ const AdminDashboard = () => {
     const { token } = useAuth();
     const navigate = useNavigate();
     const [query, setQuery] = useState('');
-    const [users, setUsers] = useState([]); 
+    const [users, setUsers] = useState([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
     // Estados para los selectores de filtrado y ordenamiento
-    const [statusFilter, setStatusFilter] = useState('all'); 
-    const [alphabeticalOrder, setAlphabeticalOrder] = useState('none'); 
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [alphabeticalOrder, setAlphabeticalOrder] = useState('none');
 
     // 🔍 1. Petición al Backend (Carga inicial de todos + Buscador en tiempo real)
     useEffect(() => {
@@ -59,7 +59,7 @@ const AdminDashboard = () => {
                     setLoading(false);
                 }
             };
-            
+
             fetchAllUsers();
             return;
         }
@@ -113,13 +113,37 @@ const AdminDashboard = () => {
         });
     }
 
+    // 🟢 Navegación al componente de edición pasando el ID dinámico
     const handleEditar = (userId) => {
-        alert(`Integración: Editar usuario ID ${userId}`);
+        navigate(`/admin/editar-usuario/${userId}`);
     };
 
-    const handleEliminar = async (userId) => {
-        if (window.confirm("¿Estás seguro de que querés cambiar el estado de este usuario?")) {
-            alert(`Integración: Eliminar/Desactivar usuario ID ${userId}`);
+    // 🟢 Toggle de activación/desactivación apuntando al endpoint de Flask
+    const handleEliminar = async (userId, currentStatus) => {
+        const accion = currentStatus ? 'desactivar' : 'activar';
+
+        if (window.confirm(`¿Estás seguro de que querés ${accion} a este usuario?`)) {
+            try {
+                setLoading(true);
+                setError('');
+
+                // Le pegamos al endpoint exclusivo que creamos en Flask
+                await axios.put(`http://localhost:5000/api/users/${userId}/toggle`, {}, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                // Cambiamos el estado local instantáneamente en la tabla
+                setUsers(prevUsers =>
+                    prevUsers.map(u => u.id === userId ? { ...u, is_active: !currentStatus } : u)
+                );
+
+                alert(`Usuario ${accion}ado con éxito.`);
+            } catch (err) {
+                console.error(err);
+                setError(err.response?.data?.message || 'No se pudo cambiar el estado.');
+            } finally {
+                setLoading(false);
+            }
         }
     };
 
@@ -243,7 +267,7 @@ const AdminDashboard = () => {
                                                         </IconButton>
                                                     </Tooltip>
                                                     <Tooltip title="Eliminar Usuario">
-                                                        <IconButton color="error" onClick={() => handleEliminar(u.id)}>
+                                                        <IconButton color="error" onClick={() => handleEliminar(u.id, u.is_active)}>
                                                             <DeleteIcon />
                                                         </IconButton>
                                                     </Tooltip>
