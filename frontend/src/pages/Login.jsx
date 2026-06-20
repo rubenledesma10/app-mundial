@@ -2,6 +2,16 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+// 📦 Importamos los componentes estéticos de Material UI
+import { 
+  Container, 
+  Box, 
+  Typography, 
+  TextField, 
+  Button, 
+  Alert, 
+  CircularProgress 
+} from '@mui/material';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -9,37 +19,36 @@ const Login = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const { login } = useContext(AuthContext);
+    const { login } = useContext(AuthContext); // Sigue usando tu contexto actual
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        setLoading(false);
 
-        if (!email.trim() || !password.trim()) { //validamos que no envíe campos vacíos
+        // Validación corregida con .trim()
+        if (!email.trim() || !password.trim()) {
             setError('Por favor, completa todos los campos.');
             return;
         }
 
         try {
             setLoading(true);
-            
-            const response = await axios.post('http://localhost:5000/api/auth/login', { //aountamos al endpoint de flask
+            // Petición a tu backend de Flask
+            const response = await axios.post('http://localhost:5000/api/auth/login', {
                 email: email,
                 password: password
             });
 
+            const { token, user } = response.data;
             
-            const { token, user } = response.data; // si esta todo ok, extramos el token y datos del usuario
+            // Guardamos en el cerebro de la app
+            login(token, user);
+            
+            // Pasamos el guardián hacia la zona privada
+            navigate('/admin', { replace: true });
 
-            login(token, user); //guardamos todo en el authcontext
-
-
-            navigate('/admin', { replace: true }); //si ya estamos logueado de verdad, podemos apasr
-
-        } catch (err) { //capturamos el error del back
-
+        } catch (err) {
             const msgError = err.response?.data?.message || 'Error al conectar con el servidor';
             setError(msgError);
         } finally {
@@ -48,43 +57,63 @@ const Login = () => {
     };
 
     return (
-        <div style={{ padding: '40px', maxWidth: '400px', margin: '0 auto' }}>
-            <h2>Iniciar Sesión</h2>
-            
-            {error && <div style={{ color: 'red', marginBottom: '15px' }}>⚠️ {error}</div>}
+        <Container maxWidth="xs">
+            <Box 
+                sx={{ 
+                    marginTop: 8, 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    alignItems: 'center',
+                    padding: 4,
+                    boxShadow: 3,
+                    borderRadius: 2,
+                    backgroundColor: '#fff' // Contenedor blanco estético
+                }}
+            >
+                <Typography component="h1" variant="h5" sx={{ color: '#1976d2', mb: 2, fontWeight: 'bold' }}>
+                    🔐 Iniciar Sesión
+                </Typography>
+                
+                {/* Alerta de error de Material UI */}
+                {error && <Alert severity="error" sx={{ width: '100%', mb: 2 }}>{error}</Alert>}
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                    <label>Correo Electrónico:</label>
-                    <input 
-                        type="email" 
-                        value={email} 
+                <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="Correo Electrónico"
+                        type="email"
+                        value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="ejemplo@mundial.com"
-                        style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc', color: '#000' }}
+                        autoComplete="email"
+                        autoFocus
+                        variant="outlined"
                     />
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                    <label>Contraseña:</label>
-                    <input 
-                        type="password" 
-                        value={password} 
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="Contraseña"
+                        type="password"
+                        value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="********"
-                        style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc', color: '#000' }}
+                        autoComplete="current-password"
+                        variant="outlined"
                     />
-                </div>
-
-                <button 
-                    type="submit" 
-                    disabled={loading}
-                    style={{ padding: '10px', background: '#007bff', color: '#white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                >
-                    {loading ? 'Ingresando...' : 'Entrar'}
-                </button>
-            </form>
-        </div>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        disabled={loading}
+                        sx={{ mt: 3, mb: 2, padding: '12px', fontWeight: 'bold', fontSize: '16px' }}
+                    >
+                        {/* Si está cargando, muestra un rulo de carga animado */}
+                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Entrar'}
+                    </Button>
+                </Box>
+            </Box>
+        </Container>
     );
 };
 
