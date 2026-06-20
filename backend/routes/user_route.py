@@ -152,4 +152,37 @@ def delete_user(user_id):
         db.session.rollback()
         return jsonify({'message': 'Error deactivating user', 'error': str(e)}), 500
     
+@users_bp.route('/search', methods=['GET'])
+@admin_required()
+def search_users():
+    try:
+        query = request.args.get('q', '').strip() #capturamos el parametro q de la url
+        if not query:
+            return jsonify({'message': 'No search query provided'}), 400
+        
+        search_pattern = f"%{query}%" #busca coincidencia en nomre, apellido, dni, etc usando like. el % alreddor para que busque "contieen esta palabra"
+        filtered_users=User.query.filter(
+            (User.first_name.like(search_pattern)) |
+            (User.last_name.like(search_pattern)) |
+            (User.dni.like(search_pattern)) |
+            (User.email.like(search_pattern))
+        ).all()
+
+        users_list = []
+        for user in filtered_users:
+            users_list.append({
+                'id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'birthdate': user.birthdate.isoformat() if user.birthdate else None,
+                'photo': user.photo,
+                'email': user.email,
+                'dni': user.dni,
+                'rol': user.rol,
+                'is_active': user.is_active
+            })
+        return jsonify({'users': users_list}), 200
+    except Exception as e:
+        return jsonify({'message': 'Error searching users', 'error': str(e)}), 500
+    
     
