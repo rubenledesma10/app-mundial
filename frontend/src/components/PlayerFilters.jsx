@@ -1,6 +1,6 @@
 import {TextField,FormControl,InputLabel,Select,MenuItem,} from '@mui/material';
 
-function PlayerFilters({ name, setName, country, setCountry }) {
+function PlayerFilters({ name, setName, country, setCountry, captain, setCaptain}) {
   return (
     <>
       <h2>Filtrar</h2>
@@ -15,7 +15,7 @@ function PlayerFilters({ name, setName, country, setCountry }) {
 
       <p>Buscando: {name}</p>
 
-      <FormControl fullWidth sx={{ mt: 2 }}>
+    <FormControl fullWidth sx={{ mt: 2 }}>
         <InputLabel>Selección</InputLabel>
 
         <Select
@@ -28,6 +28,22 @@ function PlayerFilters({ name, setName, country, setCountry }) {
           <MenuItem value="Argentina">Argentina</MenuItem>
 
           <MenuItem value="Portugal">Portugal</MenuItem>
+        </Select>
+    </FormControl>
+
+    <FormControl fullWidth sx={{ mt: 3}}>
+        <InputLabel>Capitan</InputLabel>
+        <Select 
+            value={captain}
+            label="Captain"
+            onChange={(e) => setCaptain(e.target.value)}
+        >
+            <MenuItem>Todos</MenuItem>
+
+            <MenuItem value="true">Si</MenuItem> 
+            
+            <MenuItem value="false">No</MenuItem> 
+
         </Select>
       </FormControl>
     </>
