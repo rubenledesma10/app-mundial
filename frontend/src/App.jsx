@@ -1,7 +1,13 @@
 import AdminPlayersPage from './pages/AdminPlayersPage'
+import StatisticsPage from './pages/StatisticsPage'
 
 function App() {
-  return <AdminPlayersPage />
+  return (
+    <>
+      <AdminPlayersPage />
+      <StatisticsPage />
+    </>
+  )
 }
 
 export default App
