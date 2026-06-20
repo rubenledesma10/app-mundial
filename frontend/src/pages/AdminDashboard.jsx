@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../hooks/useAuth';
-// 📦 Componentes de Material UI para armar un panel profesional
 import {
     Container,
     Box,
     Typography,
     TextField,
-    Button,
     Table,
     TableBody,
     TableCell,
@@ -17,34 +16,63 @@ import {
     Paper,
     Alert,
     CircularProgress,
-    AppBar,
-    Toolbar
+    Button,
+    IconButton,
+    Tooltip,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Grid
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const AdminDashboard = () => {
-    const { token, logout } = useAuth();
+    const { token } = useAuth();
+    const navigate = useNavigate();
     const [query, setQuery] = useState('');
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState([]); 
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // 🔍 Lógica del Buscador en tiempo real con Debounce
-    useEffect(() => {
-        const delayDebounceFn = setTimeout(() => {
-            if (query.trim() === '') {
-                setUsers([]);
-                return;
-            }
+    // Estados para los selectores de filtrado y ordenamiento
+    const [statusFilter, setStatusFilter] = useState('all'); 
+    const [alphabeticalOrder, setAlphabeticalOrder] = useState('none'); 
 
+    // 🔍 1. Petición al Backend (Carga inicial de todos + Buscador en tiempo real)
+    useEffect(() => {
+        // 🟢 CASO A: Si la barra está vacía, traemos TODOS de entrada sin esperar debounce
+        if (query.trim() === '') {
+            const fetchAllUsers = async () => {
+                try {
+                    setLoading(true);
+                    setError('');
+                    const response = await axios.get(`http://localhost:5000/api/users/search?q=`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    setUsers(response.data.users);
+                } catch (err) {
+                    setError('Error al cargar la lista completa de usuarios.');
+                    console.error(err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            
+            fetchAllUsers();
+            return;
+        }
+
+        // 🟢 CASO B: Si el usuario escribe, metemos Debounce de 300ms para no ahogar a Flask
+        const delayDebounceFn = setTimeout(() => {
             const fetchUsers = async () => {
                 try {
                     setLoading(true);
                     setError('');
-
                     const response = await axios.get(`http://localhost:5000/api/users/search?q=${query}`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
-
                     setUsers(response.data.users);
                 } catch (err) {
                     setError('Error al buscar usuarios o sesión expirada.');
@@ -60,49 +88,112 @@ const AdminDashboard = () => {
         return () => clearTimeout(delayDebounceFn);
     }, [query, token]);
 
+    // 🟢 2. CÁLCULO EN TIEMPO REAL DURANTE EL RENDER (Filtros aplicados al Frontend)
+    let filteredUsers = users.filter(u => u && typeof u === 'object');
+
+    // A) Filtrado por estado (Maneja booleanos reales o strings "true"/"false")
+    if (statusFilter === 'active') {
+        filteredUsers = filteredUsers.filter(u => u.is_active === true || String(u.is_active) === 'true');
+    } else if (statusFilter === 'inactive') {
+        filteredUsers = filteredUsers.filter(u => u.is_active === false || String(u.is_active) === 'false');
+    }
+
+    // B) Ordenamiento alfabético creando una copia nueva para forzar a React a redibujar
+    if (alphabeticalOrder === 'asc') {
+        filteredUsers = [...filteredUsers].sort((a, b) => {
+            const nameA = `${a?.last_name || ''} ${a?.first_name || ''}`.toLowerCase().trim();
+            const nameB = `${b?.last_name || ''} ${b?.first_name || ''}`.toLowerCase().trim();
+            return nameA.localeCompare(nameB, 'es', { sensitivity: 'base' });
+        });
+    } else if (alphabeticalOrder === 'desc') {
+        filteredUsers = [...filteredUsers].sort((a, b) => {
+            const nameA = `${a?.last_name || ''} ${a?.first_name || ''}`.toLowerCase().trim();
+            const nameB = `${b?.last_name || ''} ${b?.first_name || ''}`.toLowerCase().trim();
+            return nameB.localeCompare(nameA, 'es', { sensitivity: 'base' });
+        });
+    }
+
+    const handleEditar = (userId) => {
+        alert(`Integración: Editar usuario ID ${userId}`);
+    };
+
+    const handleEliminar = async (userId) => {
+        if (window.confirm("¿Estás seguro de que querés cambiar el estado de este usuario?")) {
+            alert(`Integración: Eliminar/Desactivar usuario ID ${userId}`);
+        }
+    };
+
     return (
-        <Box sx={{ flexGrow: 1, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
-            {/* 🗺️ NAVBAR DEL PANEL DE CONTROL */}
-            <AppBar position="static" color="primary">
-                <Toolbar sx={{ justifyContent: 'space-between' }}>
-                    <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
-                        👑 Panel de Control (Admin)
-                    </Typography>
-                    <Button color="inherit" onClick={logout} sx={{ fontWeight: 'bold', border: '1px solid white' }}>
-                        Cerrar Sesión
-                    </Button>
-                </Toolbar>
-            </AppBar>
+        <Box sx={{ flexGrow: 1, backgroundColor: '#f5f5f5', minHeight: '100vh', pt: 4 }}>
+            <Container maxWidth="lg">
 
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+                {/* ENCABEZADO Y BOTÓN DE ALTA */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+                    <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#1e1e2f' }}>
+                        👥 Panel de Gestión de Usuarios
+                    </Typography>
 
-                <Paper sx={{ p: 3, mb: 4, borderRadius: 2 }}>
-                    <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold', color: '#1976d2' }}>
-                        👥 Gestión de Usuarios (CRUD)
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: '#666', mb: 2 }}>
-                        [Espacio de integración] Acá se conectarán las funciones para Crear, Editar y Eliminar los registros de la base de datos.
-                    </Typography>
-                    {/* Botón de muestra estético */}
-                    <Button variant="contained" color="success" disabled>
+                    <Button
+                        variant="contained"
+                        color="success"
+                        size="large"
+                        onClick={() => navigate('/admin/nuevo-usuario')}
+                        sx={{ fontWeight: 'bold' }}
+                    >
                         + Agregar Nuevo Usuario
                     </Button>
-                </Paper>
+                </Box>
 
-                {/* 🔍 SECCIÓN: TU BUSCADOR EN TIEMPO REAL DE USUARIOS */}
-                <Paper sx={{ p: 3, borderRadius: 2 }}>
+                {/* BUSCADOR Y FILTROS */}
+                <Paper sx={{ p: 3, borderRadius: 2, boxShadow: 2, mb: 4 }}>
                     <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold', color: '#1976d2' }}>
-                        🕵️‍♂️ Buscador de Usuarios en Tiempo Real
+                        🕵️‍♂️ Buscador y Filtros Avanzados
                     </Typography>
 
-                    <TextField
-                        fullWidth
-                        label="Buscar por DNI, Nombre, Apellido o Email..."
-                        variant="outlined"
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        sx={{ mb: 3, backgroundColor: '#fff' }}
-                    />
+                    <Grid container spacing={2} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={6}>
+                            <TextField
+                                fullWidth
+                                label="Buscar por DNI, Nombre, Apellido o Email..."
+                                variant="outlined"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                sx={{ backgroundColor: '#fff' }}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} sm={6} md={3}>
+                            <FormControl fullWidth sx={{ backgroundColor: '#fff' }}>
+                                <InputLabel id="status-filter-label">Filtrar por Estado</InputLabel>
+                                <Select
+                                    labelId="status-filter-label"
+                                    value={statusFilter}
+                                    label="Filtrar por Estado"
+                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                >
+                                    <MenuItem value="all">Todos los estados</MenuItem>
+                                    <MenuItem value="active">🟢 Solo Activos</MenuItem>
+                                    <MenuItem value="inactive">🔴 Solo Inactivos</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+
+                        <Grid item xs={12} sm={6} md={3}>
+                            <FormControl fullWidth sx={{ backgroundColor: '#fff' }}>
+                                <InputLabel id="order-filter-label">Orden Alfabético</InputLabel>
+                                <Select
+                                    labelId="order-filter-label"
+                                    value={alphabeticalOrder}
+                                    label="Orden Alfabético"
+                                    onChange={(e) => setAlphabeticalOrder(e.target.value)}
+                                >
+                                    <MenuItem value="none">Sin orden específico</MenuItem>
+                                    <MenuItem value="asc">A - Z (Ascendente)</MenuItem>
+                                    <MenuItem value="desc">Z - A (Descendente)</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
 
                     {loading && (
                         <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
@@ -112,9 +203,9 @@ const AdminDashboard = () => {
 
                     {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-                    {/* 📊 TABLA ESTILIZADA CON MATERIAL UI */}
-                    {!loading && users.length > 0 && (
-                        <TableContainer component={Paper} variant="outlined">
+                    {/* TABLA DINÁMICA CON LAS CORRECCIONES DE ATRIBUTOS */}
+                    {!loading && filteredUsers.length > 0 && (
+                        <TableContainer component={Paper} variant="outlined" sx={{ mt: 2 }}>
                             <Table sx={{ minWidth: 650 }}>
                                 <TableHead sx={{ backgroundColor: '#eee' }}>
                                     <TableRow>
@@ -124,13 +215,14 @@ const AdminDashboard = () => {
                                         <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
                                         <TableCell sx={{ fontWeight: 'bold' }}>Rol</TableCell>
                                         <TableCell sx={{ fontWeight: 'bold' }}>Estado</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Acciones</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {users.map((u) => (
+                                    {filteredUsers.map((u) => (
                                         <TableRow key={u.id} hover>
                                             <TableCell>{u.id}</TableCell>
-                                            <TableCell>{u.first_name} {u.last_name}</TableCell>
+                                            <TableCell>{u?.last_name || ''}, {u?.first_name || ''}</TableCell>
                                             <TableCell>{u.dni}</TableCell>
                                             <TableCell>{u.email}</TableCell>
                                             <TableCell>
@@ -143,6 +235,20 @@ const AdminDashboard = () => {
                                                 </Box>
                                             </TableCell>
                                             <TableCell>{u.is_active ? '🟢 Activo' : '🔴 Inactivo'}</TableCell>
+                                            <TableCell sx={{ textAlign: 'center' }}>
+                                                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+                                                    <Tooltip title="Editar Usuario">
+                                                        <IconButton color="primary" onClick={() => handleEditar(u.id)}>
+                                                            <EditIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    <Tooltip title="Eliminar Usuario">
+                                                        <IconButton color="error" onClick={() => handleEliminar(u.id)}>
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </Box>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
@@ -150,9 +256,9 @@ const AdminDashboard = () => {
                         </TableContainer>
                     )}
 
-                    {!loading && query.trim() !== '' && users.length === 0 && (
-                        <Typography variant="body1" sx={{ color: '#777', fontStyle: 'italic', mt: 2 }}>
-                            No se encontraron usuarios que coincidan con "{query}".
+                    {!loading && filteredUsers.length === 0 && (
+                        <Typography variant="body1" sx={{ color: '#777', fontStyle: 'italic', mt: 3, textAlign: 'center' }}>
+                            {query.trim() === '' ? "No hay usuarios registrados en el sistema." : `No hay usuarios que coincidan con los filtros aplicados para "${query}".`}
                         </Typography>
                     )}
                 </Paper>
