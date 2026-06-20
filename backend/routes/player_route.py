@@ -2,8 +2,12 @@ from flask import Blueprint, jsonify, request
 from models.player import Player
 from models.db import db
 from datetime import datetime
-
+from models.national_team import NationalTeam
+from sqlalchemy import or_
 player_bp = Blueprint('player_bp', __name__)
+
+
+# Ruta para traer a todos los jugadores
 
 @player_bp.route('/api/players', methods=['GET'])
 def get_players():
@@ -11,7 +15,9 @@ def get_players():
     return jsonify(
         [player.to_dict() for player in players]
     ),200
-    
+
+# Ruta para crear un nuevo jugador
+
 @player_bp.route('/api/players', methods=['POST'])
 def create_player():
     data = request.get_json()
@@ -38,6 +44,8 @@ def create_player():
     db.session.commit()
     return jsonify(player.to_dict()), 201
 
+# Ruta para eliminar a un jugador, indicandolo a traves del Id
+
 @player_bp.route('/api/players/<int:id>', methods=['DELETE'])
 def delete_player(id):
     player = Player.query.get(id)
@@ -53,6 +61,8 @@ def delete_player(id):
     return jsonify({
         "Message": "Player deleted successfully"
     }), 200
+
+# Ruta para editar los atributos de un jugador, indicandolo a traves del Id
     
 @player_bp.route('/api/players/<int:id>', methods=['PUT'])
 def update_player(id):
@@ -85,3 +95,37 @@ def update_player(id):
     db.session.commit()
     
     return jsonify(player.to_dict()), 200
+
+# Ruta de busqueda + filtracion
+
+@player_bp.route('/api/players/search', methods=['GET'])
+def search_players():
+    
+    name = request.args.get('name')
+    position = request.args.get('position')
+    country = request.args.get('country')
+    
+    players_query = Player.query
+    
+    if name:
+        players_query = players_query.filter(
+            Player.first_name.ilike(f"%{name}%")
+        )
+    
+    if position:
+        players_query = players_query.filter(
+            Player.position.ilike(f"%{position}%")
+        )
+    
+    if country:
+        players_query = players_query.join(
+            NationalTeam
+        ).filter(
+            NationalTeam.country.ilike(f"%{country}%")
+        )
+    
+    players = players_query.all()
+    
+    return jsonify(
+        [player.to_dict() for player in players]
+    ), 200
