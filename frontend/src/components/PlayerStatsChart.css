@@ -16,3 +16,7 @@
 .player-stats-chart h2 {
   color: #000000;
 }
+
+.player-stats-chart {
+  text-align: center;
+}

@@ -1,3 +1,9 @@
 .statistics-page {
   padding: 30px;
+  text-align: center;
+}
+
+.statistics-page h1 {
+  color: #ffffff;
+  text-align: center;
 }
