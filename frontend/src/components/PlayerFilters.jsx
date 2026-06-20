@@ -29,6 +29,8 @@ function PlayerFilters({
   setMinCards,
   maxCards,
   setMaxCards,
+  position,
+  setPosition,
 }) {
   return (
     <>
@@ -67,7 +69,7 @@ function PlayerFilters({
           label="Captain"
           onChange={(e) => setCaptain(e.target.value)}
         >
-          <MenuItem>Todos</MenuItem>
+          <MenuItem value="">Todos</MenuItem>
 
           <MenuItem value="true">Si</MenuItem>
 
@@ -142,6 +144,25 @@ function PlayerFilters({
         value={maxCards}
         onChange={(e) => setMaxCards(e.target.value)}
       />
+      <FormControl fullWidth sx={{ mt: 3 }}>
+        <InputLabel>Posición</InputLabel>
+
+        <Select
+          value={position}
+          label="Posición"
+          onChange={(e) => setPosition(e.target.value)}
+        >
+          <MenuItem value="">Todas</MenuItem>
+
+          <MenuItem value="Arquero">Arquero</MenuItem>
+
+          <MenuItem value="Defensor">Defensor</MenuItem>
+
+          <MenuItem value="Mediocampista">Mediocampista</MenuItem>
+
+          <MenuItem value="Delantero">Delantero</MenuItem>
+        </Select>
+      </FormControl>
     </>
   );
 }
