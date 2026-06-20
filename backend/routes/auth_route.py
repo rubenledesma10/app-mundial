@@ -65,6 +65,9 @@ def login():
         if not user or not user.check_password(data.get('password')):
             return jsonify({'message': 'Invalid email or password'}), 401
         
+        if not user.is_active:
+            return jsonify({'message': 'User account is inactive'}), 403
+
         additional_claims = {
             'rol': user.rol,
             'dni': user.dni,
