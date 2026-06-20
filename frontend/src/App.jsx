@@ -3,7 +3,7 @@ import PlayerFilters from './components/PlayerFilters';
 
 function App() {
   const [players, setPlayers] = useState([]);
-  const [name, setName] = useState('');
+  const [q, setQ] = useState('');
   const [country, setCountry] = useState('');
   const [captain, setCaptain] = useState('');
   const [minGoals, setMinGoals] = useState('');
@@ -21,8 +21,8 @@ function App() {
 
     const params = [];
 
-    if (name) {
-      params.push(`name=${name}`);
+    if (q) {
+      params.push(`q=${q}`);
     }
 
     if (country) {
@@ -80,7 +80,7 @@ function App() {
       })
       .catch((error) => console.error(error));
   }, [
-    name,
+    q,
     country,
     captain,
     minGoals,
@@ -98,8 +98,8 @@ function App() {
     <>
       <h1>Mundial 2026</h1>
       <PlayerFilters
-        name={name}
-        setName={setName}
+        q={q}
+        setQ={setQ}
         country={country}
         setCountry={setCountry}
         captain={captain}

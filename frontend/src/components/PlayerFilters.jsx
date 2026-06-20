@@ -7,8 +7,8 @@ import {
 } from '@mui/material';
 
 function PlayerFilters({
-  name,
-  setName,
+  q,
+  setQ,
   country,
   setCountry,
   captain,
@@ -37,14 +37,14 @@ function PlayerFilters({
       <h2>Filtrar</h2>
 
       <TextField
-        label="Buscar jugador"
+        label="Busqueda general"
         variant="outlined"
         fullWidth
-        value={name}
-        onChange={(e) => setName(e.target.value)}
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
       />
 
-      <p>Buscando: {name}</p>
+      <p>Buscando: {q}</p>
 
       <FormControl fullWidth sx={{ mt: 2 }}>
         <InputLabel>Selección</InputLabel>
