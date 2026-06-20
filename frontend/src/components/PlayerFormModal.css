@@ -1,0 +1,23 @@
+.player-form-modal-title {
+  text-align: center;
+  font-weight: bold;
+  color: #000000;
+}
+
+.player-form-modal-grid input[type="date"] {
+  padding-top: 16.5px;
+  padding-bottom: 16.5px;
+}
+
+.player-form-modal-title {
+  text-align: center;
+  font-weight: bold;
+}
+
+.player-form-modal-grid {
+  margin-top: 8px;
+}
+
+.player-form-modal-actions {
+  padding: 16px 24px;
+}
