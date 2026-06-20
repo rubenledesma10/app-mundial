@@ -6,18 +6,36 @@ from models.national_team import NationalTeam
 from sqlalchemy import or_
 player_bp = Blueprint('player_bp', __name__)
 
-
-# Ruta para traer a todos los jugadores
+#Traemos todos los jugadores
 
 @player_bp.route('/api/players', methods=['GET'])
 def get_players():
-    players = Player.query.all()
+    players = Player.query.filter_by(is_active=True).all()
+    
     return jsonify(
         [player.to_dict() for player in players]
     ),200
 
-# Ruta para crear un nuevo jugador
+#Traemos jugadores solo por ID
 
+@player_bp.route("/api/players/<int:id>", methods=['GET'])
+def get_player_by_id(id):
+
+    player = Player.query.filter_by(
+        id=id,
+        is_active=True
+    ).first()
+    
+    if not player:
+        return jsonify({
+            "Messagge": "Player not found"
+        }), 404
+    
+    return jsonify(
+        player.to_dict()
+    ),200
+# Agregamos un nuevo jugador
+    
 @player_bp.route('/api/players', methods=['POST'])
 def create_player():
     data = request.get_json()
@@ -44,7 +62,7 @@ def create_player():
     db.session.commit()
     return jsonify(player.to_dict()), 201
 
-# Ruta para eliminar a un jugador, indicandolo a traves del Id
+#Eliminamos un jugador por su ID
 
 @player_bp.route('/api/players/<int:id>', methods=['DELETE'])
 def delete_player(id):
@@ -55,15 +73,15 @@ def delete_player(id):
             "Message": "Player not found"
         }), 404
     
-    db.session.delete(player)
+    player.is_active = False
     db.session.commit()
     
     return jsonify({
-        "Message": "Player deleted successfully"
+        "Message": "Player deactivated successfully"
     }), 200
 
-# Ruta para editar los atributos de un jugador, indicandolo a traves del Id
-    
+#Editamos un jugador por su ID
+
 @player_bp.route('/api/players/<int:id>', methods=['PUT'])
 def update_player(id):
     
@@ -109,9 +127,36 @@ def search_players():
     max_height = request.args.get('max_height')
     min_goals = request.args.get('min_goals')
     max_goals = request.args.get('max_goals')
-    players_query = Player.query
+    min_assists = request.args.get('min_assists')
+    max_assists = request.args.get('max_assists')
+    min_cards = request.args.get('min_cards')
+    max_cards = request.args.get('max_cards')
+    q = request.args.get('q')
     
-    #Filtros generales
+    #Filtramos solamente por jugadores que esten activos, asi evitamos la carga de datos no relevantes.
+    players_query = Player.query.filter_by(
+        is_active=True
+    )
+    
+    #Filtro de busqueda general
+    if q:
+        players_query = players_query.join(
+            NationalTeam
+    ).filter(
+
+        or_(
+            Player.first_name.ilike(f"%{q}%"),
+            Player.last_name.ilike(f"%{q}%"),
+            Player.position.ilike(f"%{q}%"),
+            Player.current_club.ilike(f"%{q}%"),
+            NationalTeam.country.ilike(f"%{q}%"),
+            NationalTeam.group.ilike(f"%{q}%"),
+            NationalTeam.technical_director.ilike(f"%{q}%")
+        )
+
+    )
+    
+    #Filtros generales (nombre,posicion,pais)
     
     if name:
         players_query = players_query.filter(
@@ -130,7 +175,7 @@ def search_players():
             NationalTeam.country.ilike(f"%{country}%")
         )
     
-    #Filtros avanzados
+    #Filtros avanzados, para una busqueda sumamente especifica
     
     if captain:
         if captain.lower() == 'true':
@@ -161,6 +206,27 @@ def search_players():
             Player.goals <= int(max_goals)
     )
 
+    if min_assists:
+        players_query = players_query.filter(
+            Player.assists >= int(min_assists)
+    )
+    
+    if max_assists:
+        players_query = players_query.filter(
+            Player.assists <= int(max_assists)
+    )
+    
+    if min_cards:
+        players_query = players_query.filter(
+            (Player.yellow_card + Player.red_card) >= int(min_cards)
+    )
+        
+    if max_cards:
+        players_query = players_query.filter(
+            (Player.yellow_card + Player.red_card) <= int(max_cards)
+    )
+    
+    
     
     players = players_query.all()
     
