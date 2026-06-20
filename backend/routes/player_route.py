@@ -104,8 +104,13 @@ def search_players():
     name = request.args.get('name')
     position = request.args.get('position')
     country = request.args.get('country')
+    captain = request.args.get ('captain')
+    min_height = request.args.get('min_height')
+    max_height = request.args.get('max_height')
     
     players_query = Player.query
+    
+    #Filtros generales
     
     if name:
         players_query = players_query.filter(
@@ -124,6 +129,29 @@ def search_players():
             NationalTeam.country.ilike(f"%{country}%")
         )
     
+    #Filtros avanzados
+    
+    if captain:
+        if captain.lower() == 'true':
+            players_query = players_query.filter(
+                Player.is_captain == True
+            )
+            
+        elif captain.lower() == 'false':
+            players_query = players_query.filter(
+                Player.is_captain == False
+            )
+    
+    if min_height:
+        players_query = players_query.filter(
+            Player.height >= float(min_height)
+        )
+    
+    if max_height:
+        players_query = players_query.filter(
+            Player.height <= float(max_height)
+        )
+
     players = players_query.all()
     
     return jsonify(
