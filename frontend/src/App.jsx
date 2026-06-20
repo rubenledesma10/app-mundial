@@ -1,21 +1,29 @@
 import { useEffect, useState } from 'react';
 import PlayerFilters from './components/PlayerFilters';
+
 function App() {
   const [players, setPlayers] = useState([]);
+  const [name, setName] = useState('');
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/api/players') // Hacemos el metodo GET, para traer a todos los jugadores cargados
+    let url = 'http://127.0.0.1:5000/api/players';
+
+    if (name) {
+      url = `http://127.0.0.1:5000/api/players/search?name=${name}`;
+    }
+
+    fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setPlayers(data);
       })
       .catch((error) => console.error(error));
-  }, []);
+  }, [name]);
+
   return (
     <>
       <h1>Mundial 2026</h1>
-      <PlayerFilters />
+      <PlayerFilters name={name} setName={setName} />
       <p>Jugadores: {players.length}</p>
     </>
   );

@@ -1,9 +1,6 @@
 import { TextField } from '@mui/material';
-import { useState } from 'react';
 
-function PlayerFilters() {
-  const [name, setName] = useState('');
-
+function PlayerFilters({ name, setName }) {
   return (
     <>
       <h2>Filtrar</h2>
