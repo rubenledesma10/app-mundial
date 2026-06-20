@@ -107,7 +107,8 @@ def search_players():
     captain = request.args.get ('captain')
     min_height = request.args.get('min_height')
     max_height = request.args.get('max_height')
-    
+    min_goals = request.args.get('min_goals')
+    max_goals = request.args.get('max_goals')
     players_query = Player.query
     
     #Filtros generales
@@ -151,7 +152,16 @@ def search_players():
         players_query = players_query.filter(
             Player.height <= float(max_height)
         )
+    if min_goals:
+        players_query = players_query.filter(
+            Player.goals >= int(min_goals)
+    )
+    if max_goals:
+        players_query = players_query.filter(
+            Player.goals <= int(max_goals)
+    )
 
+    
     players = players_query.all()
     
     return jsonify(
