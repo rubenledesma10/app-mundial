@@ -25,9 +25,18 @@ function PlayerCard({ player, onEdit, onDelete }) {
         }`}
       >
         <CardContent>
+          {player.photo ? (
+            <img
+              src={player.photo}
+              alt={`${player.first_name} ${player.last_name}`}
+              className="player-card-photo"
+            />
+          ) : (
+            player.is_captain && <div className="player-card-star">⭐</div>
+          )}
+
           <Typography variant="h6">
             {player.first_name} {player.last_name}
-            {player.is_captain && ' ⭐'}
           </Typography>
 
           <Typography>Posición: {player.position}</Typography>
