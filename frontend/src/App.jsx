@@ -22,28 +22,27 @@ function App() {
         <Navbar />
 
         <Routes>
-          {/* rutas publicas */}
-          <Route path="/players" element={<Players />} />
+          {/* RUTAS PÚBLICAS */}
           <Route path="/" element={<HomePublic />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Registro />} />
-          <Route path="/estadisticas" element={<StatisticsPage />} />
-          <Route path="/perfil" element={<ProfilePage />} />
 
-          {/* Privadas para cualquier usuario autenticado */}
+          {/* RUTAS PARA CUALQUIER USUARIO AUTENTICADO */}
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<HomePrivate />} />
+            <Route path="/players" element={<Players />} />
+            <Route path="/estadisticas" element={<StatisticsPage />} />
+            <Route path="/perfil" element={<ProfilePage />} />
           </Route>
 
-          {/* rutas privadas, solo para admin */}
-          <Route path="/admin-home" element={<HomeAdmin />} />
+          {/* RUTAS SOLO ADMIN */}
           <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+            <Route path="/admin-home" element={<HomeAdmin />} />
+
             <Route path="/admin" element={<AdminDashboard />} />
 
-            {/* NUEVA RUTA PROTEGIDA PARA EL FORMULARIO DE ADMIN */}
             <Route path="/admin/nuevo-usuario" element={<AdminRegistro />} />
 
-            {/* NUEVA RUTA DINÁMICA PROTEGIDA PARA EDITAR POR ID */}
             <Route
               path="/admin/editar-usuario/:id"
               element={<AdminEditarUsuario />}
