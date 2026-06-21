@@ -2,145 +2,125 @@ from datetime import date
 from app import app
 from models.db import db
 from models.national_team import NationalTeam
-from models.person import Person
 from models.player import Player
 from models.user import User
+import json
+
 
 def seed_database():
     print("⏳ Borrando tablas y recreando base de datos desde cero...")
-    
-    # 🟢 CON ESTO SE CREAN TODAS LAS COLUMNAS QUE FALTIEN (incluyendo is_active)
+
     db.drop_all()
     db.create_all()
-    
+
     print("🌱 Iniciando la carga de datos (Seeding)...")
-    
-    # 2. Crear los Usuarios del Sistema (Admin y User Común)
+
     print("👥 Creando usuarios del sistema...")
-    
+
     admin_ruben = User(
         first_name="Ruben",
         last_name="Ledesma",
         birthdate=date(1996, 11, 29),
         email="rubenadmin@admin.com",
-        dni="40070521",  # Guardamos limpio sin puntos
+        dni="40070521",
         rol="admin",
         is_active=True
     )
-    admin_ruben.set_password("messi2022")  # Encripta la contraseña
+    admin_ruben.set_password("messi2022")
 
     user_santi = User(
         first_name="Santiago",
         last_name="Romano",
         birthdate=date(2001, 8, 20),
         email="santi@gmail.com",
-        dni="40999888",  # Guardamos limpio sin guiones
+        dni="40999888",
         rol="user",
         is_active=True
     )
-    user_santi.set_password("UserPass456")  # Encripta la contraseña
+    user_santi.set_password("UserPass456")
 
     db.session.add(admin_ruben)
     db.session.add(user_santi)
     db.session.commit()
-    print("✅ Usuarios (Ruben y Santiago) creados con éxito.")
 
-    # 3. Crear las Selecciones (National Teams)
-    argentina = NationalTeam(
-        country="Argentina",
-        technical_director="Lionel Scaloni",
-        group="H"
-    )
-    
-    portugal = NationalTeam(
-        country="Portugal",
-        technical_director="Roberto Martínez",
-        group="K"
-    )
+    print("✅ Usuarios creados con éxito.")
 
-    db.session.add(argentina)
-    db.session.add(portugal)
-    db.session.commit() 
-    print("✅ Selecciones creadas con éxito.")
-
-    # 4. Crear los Jugadores (Players) vinculados a sus selecciones
-    jugadores = [
-        # Jugadores de Argentina
-        Player(
-            first_name="Lionel",
-            last_name="Messi",
-            birthdate=date(1987, 6, 24),
-            photo="https://images.tntsports.com.ar/2023/10/30/1698710323.jpg",
-            id_national_teams=argentina.id_national_teams,
-            position="Delantero",
-            tshirt_number=10,
-            current_club="Inter Miami CF",
-            goals=8,
-            assists=7,
-            yellow_card=1,
-            red_card=0,
-            is_captain=True,
-            weight=72.0,
-            height=1.70
-        ),
-        Player(
-            first_name="Emiliano",
-            last_name="Martínez",
-            birthdate=date(1992, 9, 2),
-            photo="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6A7w3uCWhEa023yC9z_5f8t6g-C5-3qXW3Q&s",
-            id_national_teams=argentina.id_national_teams,
-            position="Arquero",
-            tshirt_number=23,
-            current_club="Aston Villa F.C.",
-            goals=0,
-            assists=0,
-            yellow_card=2,
-            red_card=0,
-            is_captain=False,
-            weight=88.0,
-            height=1.95
-        ),
-        # Jugadores de Portugal
-        Player(
-            first_name="Cristiano",
-            last_name="Ronaldo",
-            birthdate=date(1985, 2, 5),
-            photo="https://images.daznservices.com/di/library/DAZN_News/b0/cb/cristiano-ronaldo-portugal_wphh5343by3m1at74u68h08w5.jpg",
-            id_national_teams=portugal.id_national_teams,
-            position="Delantero",
-            tshirt_number=7,
-            current_club="Al-Nassr F.C.",
-            goals=5,
-            assists=2,
-            yellow_card=0,
-            red_card=0,
-            is_captain=True,
-            weight=83.0,
-            height=1.87
-        ),
-        Player(
-            first_name="Bruno",
-            last_name="Fernandes",
-            birthdate=date(1994, 9, 8),
-            photo="https://assets.editorial.manutd.com/AssetPicker/images/0/0/18/125/1211756/Bruno_Fernandes_action_vs_Chelsea1685043813876.jpg",
-            id_national_teams=portugal.id_national_teams,
-            position="Volante",
-            tshirt_number=8,
-            current_club="Manchester United F.C.",
-            goals=3,
-            assists=4,
-            yellow_card=1,
-            red_card=0,
-            is_captain=False,
-            weight=69.0,
-            height=1.79
-        )
+    national_teams = [
+        "México", "Sudáfrica", "Corea del Sur", "Chequia", "Canadá",
+        "Bosnia y Herzegovina", "Qatar", "Suiza", "Brasil", "Marruecos",
+        "Haití", "Escocia", "Estados Unidos", "Paraguay", "Australia",
+        "Turquía", "Alemania", "Curazao", "Costa de Marfil", "Ecuador",
+        "Países Bajos", "Japón", "Suecia", "Túnez", "Bélgica",
+        "Egipto", "Irán", "Nueva Zelanda", "España", "Cabo Verde",
+        "Arabia Saudita", "Uruguay", "Francia", "Senegal", "Irak",
+        "Noruega", "Argentina", "Argelia", "Austria", "Jordania",
+        "Portugal", "República Democrática del Congo", "Uzbekistán",
+        "Colombia", "Inglaterra", "Croacia", "Ghana", "Panamá"
     ]
+
+    for country in national_teams:
+        db.session.add(
+            NationalTeam(
+                country=country,
+                technical_director="Sin definir",
+                group="A"
+            )
+        )
+
+    db.session.commit()
+
+    teams = {}
+
+    for team in NationalTeam.query.all():
+        teams[team.country] = team.id_national_teams
+
+    print("✅ 48 selecciones creadas con éxito.")
+
+    # 4. Crear los Jugadores desde players.json
+    with open("data/players.json", "r", encoding="utf-8") as file:
+        contenido = file.read()
+
+    print("PRIMEROS 200 CARACTERES:")
+    print(repr(contenido[:200]))
+
+    players_json = json.loads(contenido)
+
+    jugadores = []
+
+    for index, player_data in enumerate(players_json, start=1):
+        team_name = player_data["national_team"]
+        team_id = teams.get(team_name)
+
+        if not team_id:
+            print(f"⚠️ Selección no encontrada: {team_name}")
+            continue
+
+        jugador = Player(
+            first_name=player_data["first_name"],
+            last_name=player_data["last_name"],
+            birthdate=date.fromisoformat(player_data["birthdate"]),
+            photo=player_data["photo"],
+            id_national_teams=team_id,
+            position=player_data["position"],
+            tshirt_number=index,
+            current_club=player_data["current_club"],
+            goals=player_data["goals"],
+            assists=player_data["assists"],
+            yellow_card=player_data["yellow_card"],
+            red_card=player_data["red_card"],
+            is_captain=index % 25 == 0,
+            weight=player_data["weight"],
+            height=player_data["height"]
+        )
+
+        jugadores.append(jugador)
 
     db.session.add_all(jugadores)
     db.session.commit()
-    print("✅ Jugadores insertados con éxito.")
-    print("🏆 ¡Base de datos poblada completamente (Usuarios + Mundial)!")
+
+    print(f"✅ {len(jugadores)} jugadores insertados con éxito.")
+    print("🏆 ¡Base de datos poblada completamente!")
+
 
 if __name__ == '__main__':
     with app.app_context():
