@@ -83,6 +83,23 @@ def delete_player(id):
     return jsonify({
         "Message": "Player deactivated successfully"
     }), 200
+#Actualizamos el estado de un jugador por su ID (activo/inactivo)
+@player_bp.route('/api/players/<int:id>/status', methods=['PATCH'])
+@admin_required()
+def update_player_status(id):
+    player = Player.query.get(id)
+
+    if not player:
+        return jsonify({
+            "Message": "Player not found"
+        }), 404
+
+    data = request.get_json()
+
+    player.is_active = data.get('is_active')
+    db.session.commit()
+
+    return jsonify(player.to_dict()), 200
 
 #Editamos un jugador por su ID
 
@@ -139,9 +156,18 @@ def search_players():
     q = request.args.get('q')
     
     #Filtramos solamente por jugadores que esten activos, asi evitamos la carga de datos no relevantes.
-    players_query = Player.query.filter_by(
-        is_active=True
-    )
+    status = request.args.get('status', 'active')
+
+    players_query = Player.query
+
+    if status == 'active':
+            players_query = players_query.filter(Player.is_active == True)
+
+    elif status == 'inactive':
+            players_query = players_query.filter(Player.is_active == False)
+
+    elif status == 'all':
+            pass
     
     #Filtro de busqueda general
     if q:
