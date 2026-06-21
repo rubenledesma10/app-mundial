@@ -15,3 +15,15 @@ class User(Person):
         self.password = generate_password_hash(password_input)
     def check_password(self, password_input): #aca va la logica para verificar el hash de la contraseña
         return check_password_hash(self.password, password_input)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'full_name': self.get_full_name(),  #metodo heredado de person
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'dni': self.dni,
+            'rol': self.rol,
+            'is_active': self.is_active
+        }
