@@ -49,7 +49,7 @@ const Login = () => {
       login(token, user);
 
       if (user.rol === 'admin') {
-        navigate('/admin', { replace: true });
+        navigate('/admin-home', { replace: true });
       } else {
         navigate('/home', { replace: true });
       }

@@ -14,14 +14,15 @@ function Players() {
   const [maxHeight, setMaxHeight] = useState('')
   const [minAssists, setMinAssists] = useState('')
   const [maxAssists, setMaxAssists] = useState('')
-  const [yellowCards, setYellowCards] = useState('')
-  const [redCards, setRedCards] = useState('')
+  const [minCards, setMinCards] = useState('')
+  const [maxCards, setMaxCards] = useState('')
   const [position, setPosition] = useState('')
 
   useEffect(() => {
     let url = 'http://127.0.0.1:5000/api/players/search'
     const params = []
 
+    
     if (q) params.push(`q=${q}`)
     if (country) params.push(`country=${country}`)
     if (captain) params.push(`captain=${captain}`)
@@ -31,8 +32,8 @@ function Players() {
     if (maxHeight) params.push(`max_height=${maxHeight}`)
     if (minAssists) params.push(`min_assists=${minAssists}`)
     if (maxAssists) params.push(`max_assists=${maxAssists}`)
-    if (yellowCards) params.push(`yellow_card=${yellowCards}`)
-    if (redCards) params.push(`red_card=${redCards}`)
+    if (minCards) params.push(`min_cards=${minCards}`)
+    if (maxCards) params.push(`max_cards=${maxCards}`)
     if (position) params.push(`position=${position}`)
 
     if (params.length > 0) {
@@ -53,8 +54,8 @@ function Players() {
     maxHeight,
     minAssists,
     maxAssists,
-    yellowCards,
-    redCards,
+    minCards,
+    maxCards,
     position,
   ])
 
@@ -83,10 +84,10 @@ function Players() {
             setMinAssists={setMinAssists}
             maxAssists={maxAssists}
             setMaxAssists={setMaxAssists}
-            yellowCards={yellowCards}
-            setYellowCards={setYellowCards}
-            redCards={redCards}
-            setRedCards={setRedCards}
+            minCards={minCards}
+            setMinCards={setMinCards}
+            maxCards={maxCards}
+            setMaxCards={setMaxCards}
             position={position}
             setPosition={setPosition}
           />
