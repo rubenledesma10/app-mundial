@@ -2,17 +2,44 @@ from flask import Blueprint, jsonify, request
 from models.player import Player
 from models.db import db
 from datetime import datetime
+from models.national_team import NationalTeam
+from sqlalchemy import or_
+from utils.decorators import admin_required
 
 player_bp = Blueprint('player_bp', __name__)
 
+#Traemos todos los jugadores
+
 @player_bp.route('/api/players', methods=['GET'])
 def get_players():
-    players = Player.query.all()
+    players = Player.query.filter_by(is_active=True).all()
+    
     return jsonify(
         [player.to_dict() for player in players]
     ),200
+
+#Traemos jugadores solo por ID
+
+@player_bp.route("/api/players/<int:id>", methods=['GET'])
+def get_player_by_id(id):
+
+    player = Player.query.filter_by(
+        id=id,
+        is_active=True
+    ).first()
+    
+    if not player:
+        return jsonify({
+            "Messagge": "Player not found"
+        }), 404
+    
+    return jsonify(
+        player.to_dict()
+    ),200
+# Agregamos un nuevo jugador
     
 @player_bp.route('/api/players', methods=['POST'])
+@admin_required()
 def create_player():
     data = request.get_json()
     
@@ -38,7 +65,10 @@ def create_player():
     db.session.commit()
     return jsonify(player.to_dict()), 201
 
+#Eliminamos un jugador por su ID
+
 @player_bp.route('/api/players/<int:id>', methods=['DELETE'])
+@admin_required()
 def delete_player(id):
     player = Player.query.get(id)
     
@@ -47,14 +77,17 @@ def delete_player(id):
             "Message": "Player not found"
         }), 404
     
-    db.session.delete(player)
+    player.is_active = False
     db.session.commit()
     
     return jsonify({
-        "Message": "Player deleted successfully"
+        "Message": "Player deactivated successfully"
     }), 200
-    
+
+#Editamos un jugador por su ID
+
 @player_bp.route('/api/players/<int:id>', methods=['PUT'])
+@admin_required()
 def update_player(id):
     
     player = Player.query.get(id)
@@ -85,3 +118,123 @@ def update_player(id):
     db.session.commit()
     
     return jsonify(player.to_dict()), 200
+
+# Ruta de busqueda + filtracion
+
+@player_bp.route('/api/players/search', methods=['GET'])
+def search_players():
+    
+    name = request.args.get('name')
+    position = request.args.get('position')
+    country = request.args.get('country')
+    captain = request.args.get ('captain')
+    min_height = request.args.get('min_height')
+    max_height = request.args.get('max_height')
+    min_goals = request.args.get('min_goals')
+    max_goals = request.args.get('max_goals')
+    min_assists = request.args.get('min_assists')
+    max_assists = request.args.get('max_assists')
+    min_cards = request.args.get('min_cards')
+    max_cards = request.args.get('max_cards')
+    q = request.args.get('q')
+    
+    #Filtramos solamente por jugadores que esten activos, asi evitamos la carga de datos no relevantes.
+    players_query = Player.query.filter_by(
+        is_active=True
+    )
+    
+    #Filtro de busqueda general
+    if q:
+        players_query = players_query.join(
+            NationalTeam
+    ).filter(
+
+        or_(
+            Player.first_name.ilike(f"%{q}%"),
+            Player.last_name.ilike(f"%{q}%"),
+            Player.position.ilike(f"%{q}%"),
+            Player.current_club.ilike(f"%{q}%"),
+            NationalTeam.country.ilike(f"%{q}%"),
+            NationalTeam.group.ilike(f"%{q}%"),
+            NationalTeam.technical_director.ilike(f"%{q}%")
+        )
+
+    )
+    
+    #Filtros generales (nombre,posicion,pais)
+    
+    if name:
+        players_query = players_query.filter(
+            Player.first_name.ilike(f"%{name}%")
+        )
+    
+    if position:
+        players_query = players_query.filter(
+            Player.position.ilike(f"%{position}%")
+        )
+    
+    if country:
+        players_query = players_query.join(
+            NationalTeam
+        ).filter(
+            NationalTeam.country.ilike(f"%{country}%")
+        )
+    
+    #Filtros avanzados, para una busqueda sumamente especifica
+    
+    if captain:
+        if captain.lower() == 'true':
+            players_query = players_query.filter(
+                Player.is_captain == True
+            )
+            
+        elif captain.lower() == 'false':
+            players_query = players_query.filter(
+                Player.is_captain == False
+            )
+    
+    if min_height:
+        players_query = players_query.filter(
+            Player.height >= float(min_height)
+        )
+    
+    if max_height:
+        players_query = players_query.filter(
+            Player.height <= float(max_height)
+        )
+    if min_goals:
+        players_query = players_query.filter(
+            Player.goals >= int(min_goals)
+    )
+    if max_goals:
+        players_query = players_query.filter(
+            Player.goals <= int(max_goals)
+    )
+
+    if min_assists:
+        players_query = players_query.filter(
+            Player.assists >= int(min_assists)
+    )
+    
+    if max_assists:
+        players_query = players_query.filter(
+            Player.assists <= int(max_assists)
+    )
+    
+    if min_cards:
+        players_query = players_query.filter(
+            (Player.yellow_card + Player.red_card) >= int(min_cards)
+    )
+        
+    if max_cards:
+        players_query = players_query.filter(
+            (Player.yellow_card + Player.red_card) <= int(max_cards)
+    )
+    
+    
+    
+    players = players_query.all()
+    
+    return jsonify(
+        [player.to_dict() for player in players]
+    ), 200

@@ -8,6 +8,8 @@ from models.national_team import NationalTeam
 from models.player import Player
 from models.user import User
 from routes.player_route import player_bp
+from routes.auth_route import auth_bp
+from routes.user_route import users_bp
 
 import os
 
@@ -20,7 +22,8 @@ db.init_app(app)
 
 #aca van los bluesprints
 app.register_blueprint(player_bp)
-
+app.register_blueprint(auth_bp)
+app.register_blueprint(users_bp)
 
 with app.app_context():
     from models.national_team import NationalTeam

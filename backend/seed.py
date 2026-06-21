@@ -7,15 +7,45 @@ from models.player import Player
 from models.user import User
 
 def seed_database():
-    print("⏳ Iniciando la carga de datos (Seeding)...")
+    print("⏳ Borrando tablas y recreando base de datos desde cero...")
     
-    # 1. Limpiar datos existentes para no duplicar en cada ejecución
-    # El orden importa por las claves foráneas (primero hijos, luego padres)
-    Player.query.delete()
-    NationalTeam.query.delete()
-    db.session.commit()
+    # 🟢 CON ESTO SE CREAN TODAS LAS COLUMNAS QUE FALTIEN (incluyendo is_active)
+    db.drop_all()
+    db.create_all()
+    
+    print("🌱 Iniciando la carga de datos (Seeding)...")
+    
+    # 2. Crear los Usuarios del Sistema (Admin y User Común)
+    print("👥 Creando usuarios del sistema...")
+    
+    admin_ruben = User(
+        first_name="Ruben",
+        last_name="Ledesma",
+        birthdate=date(1996, 11, 29),
+        email="rubenadmin@admin.com",
+        dni="40070521",  # Guardamos limpio sin puntos
+        rol="admin",
+        is_active=True
+    )
+    admin_ruben.set_password("messi2022")  # Encripta la contraseña
 
-    # 2. Crear las Selecciones (National Teams)
+    user_santi = User(
+        first_name="Santiago",
+        last_name="Romano",
+        birthdate=date(2001, 8, 20),
+        email="santi@gmail.com",
+        dni="40999888",  # Guardamos limpio sin guiones
+        rol="user",
+        is_active=True
+    )
+    user_santi.set_password("UserPass456")  # Encripta la contraseña
+
+    db.session.add(admin_ruben)
+    db.session.add(user_santi)
+    db.session.commit()
+    print("✅ Usuarios (Ruben y Santiago) creados con éxito.")
+
+    # 3. Crear las Selecciones (National Teams)
     argentina = NationalTeam(
         country="Argentina",
         technical_director="Lionel Scaloni",
@@ -28,20 +58,19 @@ def seed_database():
         group="K"
     )
 
-    # Guardamos las selecciones en la sesión para que generen sus IDs
     db.session.add(argentina)
     db.session.add(portugal)
-    db.session.commit() # Commit aquí para que MySQL asigne los IDs reales
+    db.session.commit() 
     print("✅ Selecciones creadas con éxito.")
 
-    # 3. Crear los Jugadores (Players) vinculados a sus selecciones
+    # 4. Crear los Jugadores (Players) vinculados a sus selecciones
     jugadores = [
         # Jugadores de Argentina
         Player(
             first_name="Lionel",
             last_name="Messi",
             birthdate=date(1987, 6, 24),
-            photo="https://images.tntsports.com.ar/2023/10/30/1698710323.jpg", # URL de ejemplo de internet
+            photo="https://images.tntsports.com.ar/2023/10/30/1698710323.jpg",
             id_national_teams=argentina.id_national_teams,
             position="Delantero",
             tshirt_number=10,
@@ -108,13 +137,11 @@ def seed_database():
         )
     ]
 
-    # Guardamos todos los jugadores en la base de datos
     db.session.add_all(jugadores)
     db.session.commit()
     print("✅ Jugadores insertados con éxito.")
-    print("🏆 ¡Base de datos del Mundial poblada correctamente!")
+    print("🏆 ¡Base de datos poblada completamente (Usuarios + Mundial)!")
 
 if __name__ == '__main__':
-    # Necesitamos el contexto de la app para que reconozca los modelos y la conexión
     with app.app_context():
         seed_database()
