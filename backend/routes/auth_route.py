@@ -4,20 +4,26 @@ from models.db import db
 from models.user import User
 from flask_jwt_extended import create_access_token
 from datetime import date
+import os
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
     try:
-        data=request.get_json()
+
+        if not request.form:
+            return jsonify({'message': 'Missing required fields'}), 400
+            
+        email_required = request.form.get('email')
+        password_required = request.form.get('password')
+        dni_required = request.form.get('dni')
         
-        if not data or 'email' not in data or 'password' not in data or 'dni' not in data:
+        if not email_required or not password_required or not dni_required:
             return jsonify({'message': 'Email, password, and DNI are required'}), 400
         
-        email_exists = data.get('email').lower().strip()
-
-        dni_model = str(data.get('dni')).strip()
+        email_exists = email_required.lower().strip()
+        dni_model = str(dni_required).strip()
         dni_clean = dni_model.replace(" ", "").replace("-", "").replace(".", "")
 
         if not dni_clean.isdigit():
@@ -31,23 +37,40 @@ def register():
         if user_dni_exists:
             return jsonify({'message': 'DNI already exists'}), 400
 
-        birthdate_format=None
-        if data.get('birthdate'):
-            birthdate_format = date.fromisoformat(data.get('birthdate'))
+        birthdate_format = None
+        if request.form.get('birthdate'):
+            birthdate_format = date.fromisoformat(request.form.get('birthdate'))
+ 
         new_user = User(
-            first_name=data.get('first_name'),
-            last_name=data.get('last_name'),
+            first_name=request.form.get('first_name'),
+            last_name=request.form.get('last_name'),
             birthdate=birthdate_format,
-            photo=data.get('photo'),
             email=email_exists,
             dni=dni_clean,
-            rol=data.get('rol', 'user').lower().strip()
+            rol='user', 
+            photo=None
         )
 
-        new_user.set_password(data.get('password'))
+        new_user.set_password(password_required)
+
         db.session.add(new_user)
+        db.session.flush() 
+
+        UPLOAD_FOLDER = 'static/uploads'
+        if 'photo' in request.files:
+            file = request.files['photo']
+            if file and file.filename != '':
+                from werkzeug.utils import secure_filename
+                filename = secure_filename(f"user_{new_user.id}_{file.filename}")
+                filepath = os.path.join(UPLOAD_FOLDER, filename)
+
+                file.save(filepath)
+
+                new_user.photo = f"static/uploads/{filename}"
+
         db.session.commit()
         return jsonify({'message': 'User registered successfully'}), 201
+        
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': 'Error registering user', 'error': str(e)}), 500
