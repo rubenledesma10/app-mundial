@@ -6,7 +6,7 @@ import Login from './pages/Login';
 import Registro from './pages/Registro';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminRegistro from './pages/AdminRegistro';
-import AdminEditarUsuario from './pages/AdminEditarUsuario'; // 🟢 1. IMPORTADO EL COMPONENTE DE EDICIÓN
+import AdminEditarUsuario from './pages/AdminEditarUsuario'; 
 
 const Home = () => (
   <div style={{ padding: '40px', textAlign: 'center' }}>
@@ -31,10 +31,10 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
             <Route path="/admin" element={<AdminDashboard />} />
             
-            {/* 🟢 NUEVA RUTA PROTEGIDA PARA EL FORMULARIO DE ADMIN */}
+            {/* NUEVA RUTA PROTEGIDA PARA EL FORMULARIO DE ADMIN */}
             <Route path="/admin/nuevo-usuario" element={<AdminRegistro />} />
             
-            {/* 🟢 2. NUEVA RUTA DINÁMICA PROTEGIDA PARA EDITAR POR ID */}
+            {/* NUEVA RUTA DINÁMICA PROTEGIDA PARA EDITAR POR ID */}
             <Route path="/admin/editar-usuario/:id" element={<AdminEditarUsuario />} />
           </Route>
         </Routes>

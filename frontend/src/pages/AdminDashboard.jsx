@@ -36,13 +36,12 @@ const AdminDashboard = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Estados para los selectores de filtrado y ordenamiento
     const [statusFilter, setStatusFilter] = useState('all');
     const [alphabeticalOrder, setAlphabeticalOrder] = useState('none');
 
-    // 🔍 1. Petición al Backend (Carga inicial de todos + Buscador en tiempo real)
+   
     useEffect(() => {
-        // 🟢 CASO A: Si la barra está vacía, traemos TODOS de entrada sin esperar debounce
+      
         if (query.trim() === '') {
             const fetchAllUsers = async () => {
                 try {
@@ -64,7 +63,7 @@ const AdminDashboard = () => {
             return;
         }
 
-        // 🟢 CASO B: Si el usuario escribe, metemos Debounce de 300ms para no ahogar a Flask
+
         const delayDebounceFn = setTimeout(() => {
             const fetchUsers = async () => {
                 try {
@@ -88,17 +87,17 @@ const AdminDashboard = () => {
         return () => clearTimeout(delayDebounceFn);
     }, [query, token]);
 
-    // 🟢 2. CÁLCULO EN TIEMPO REAL DURANTE EL RENDER (Filtros aplicados al Frontend)
+
     let filteredUsers = users.filter(u => u && typeof u === 'object');
 
-    // A) Filtrado por estado (Maneja booleanos reales o strings "true"/"false")
+
     if (statusFilter === 'active') {
         filteredUsers = filteredUsers.filter(u => u.is_active === true || String(u.is_active) === 'true');
     } else if (statusFilter === 'inactive') {
         filteredUsers = filteredUsers.filter(u => u.is_active === false || String(u.is_active) === 'false');
     }
 
-    // B) Ordenamiento alfabético creando una copia nueva para forzar a React a redibujar
+
     if (alphabeticalOrder === 'asc') {
         filteredUsers = [...filteredUsers].sort((a, b) => {
             const nameA = `${a?.last_name || ''} ${a?.first_name || ''}`.toLowerCase().trim();
@@ -113,12 +112,11 @@ const AdminDashboard = () => {
         });
     }
 
-    // 🟢 Navegación al componente de edición pasando el ID dinámico
     const handleEditar = (userId) => {
         navigate(`/admin/editar-usuario/${userId}`);
     };
 
-    // 🟢 Toggle de activación/desactivación apuntando al endpoint de Flask
+
     const handleEliminar = async (userId, currentStatus) => {
         const accion = currentStatus ? 'desactivar' : 'activar';
 
@@ -127,12 +125,11 @@ const AdminDashboard = () => {
                 setLoading(true);
                 setError('');
 
-                // Le pegamos al endpoint exclusivo que creamos en Flask
+  
                 await axios.put(`http://localhost:5000/api/users/${userId}/toggle`, {}, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
-                // Cambiamos el estado local instantáneamente en la tabla
                 setUsers(prevUsers =>
                     prevUsers.map(u => u.id === userId ? { ...u, is_active: !currentStatus } : u)
                 );

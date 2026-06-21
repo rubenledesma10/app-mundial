@@ -18,8 +18,8 @@ const AdminEditarUsuario = () => {
     const [formData, setFormData] = useState({
         first_name: '', last_name: '', dni: '', email: '', rol: '', birthdate: ''
     });
-    const [previewUrl, setPreviewUrl] = useState(''); // Para mostrar en pantalla
-    const [selectedFile, setSelectedFile] = useState(null); // Guardará el archivo BINARIO real
+    const [previewUrl, setPreviewUrl] = useState(''); 
+    const [selectedFile, setSelectedFile] = useState(null); 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -64,8 +64,8 @@ const AdminEditarUsuario = () => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setSelectedFile(file); // Guardamos el binario para mandarlo a Flask
-            setPreviewUrl(URL.createObjectURL(file)); // Generamos una URL temporal local para la vista previa
+            setSelectedFile(file); 
+            setPreviewUrl(URL.createObjectURL(file));
         }
     };
 
@@ -81,23 +81,23 @@ const AdminEditarUsuario = () => {
         }
     };
 
-    // Captura de la cámara y conversión a archivo físico (Blob)
+
     const capturePhoto = () => {
         const video = videoRef.current;
         if (!video) return;
 
         const canvas = document.createElement('canvas');
-        canvas.width = 640; // Buena resolución total porque va al disco, no a la BD
+        canvas.width = 640; 
         canvas.height = 480;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // Convertimos el canvas a un Blob binario (como si fuera un archivo de la PC)
+
         canvas.toBlob((blob) => {
             if (blob) {
                 const fileFromCamera = new File([blob], "camera_capture.jpg", { type: "image/jpeg" });
-                setSelectedFile(fileFromCamera); // Guardamos el binario
-                setPreviewUrl(URL.createObjectURL(fileFromCamera)); // Vista previa temporal
+                setSelectedFile(fileFromCamera);
+                setPreviewUrl(URL.createObjectURL(fileFromCamera));
             }
         }, 'image/jpeg', 0.9);
 
@@ -106,7 +106,7 @@ const AdminEditarUsuario = () => {
         setUsingCamera(false);
     };
 
-    // Envío usando FormData (multipart/form-data)
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -129,7 +129,7 @@ const AdminEditarUsuario = () => {
             await axios.put(`http://localhost:5000/api/users/${id}`, formToSend, {
                 headers: { 
                     Authorization: `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data' // 👈 Avisamos a Flask que viajan archivos binarios
+                    'Content-Type': 'multipart/form-data' 
                 }
             });
 

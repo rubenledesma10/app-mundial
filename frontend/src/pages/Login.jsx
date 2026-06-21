@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../hooks/useAuth';
-// 📦 Importamos los componentes estéticos de Material UI
+
 import { 
   Container, 
   Box, 
@@ -40,7 +40,7 @@ const Login = () => {
 
             const { token, user } = response.data;
             
-            // Guardamos en el cerebro de la app
+
             login(token, user); //guardamos la informacion
             
             navigate('/admin', { replace: true }); //podemos acceder

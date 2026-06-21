@@ -22,7 +22,7 @@ const Navbar = () => {
                     {/* Botón siempre visible */}
                     <Button color="inherit" component={Link} to="/">Home</Button>
 
-                    {/* 👤 CASO 1: NO LOGUEADO */}
+                    {/*  NO LOGUEADO */}
                     {!token && (
                         <>
                             <Button color="inherit" component={Link} to="/login">Login</Button>
@@ -30,7 +30,7 @@ const Navbar = () => {
                         </>
                     )}
 
-                    {/* 👑 CASO 2: LOGUEADO COMO ADMIN */}
+                    {/* LOGUEADO COMO ADMIN */}
                     {token && user?.rol === 'admin' && (
                         <>
                             <Button color="warning" variant="contained" component={Link} to="/admin" sx={{ fontWeight: 'bold' }}>
@@ -40,7 +40,7 @@ const Navbar = () => {
                         </>
                     )}
 
-                    {/* 🏃‍♂️ CASO 3: LOGUEADO COMO USER COMÚN */}
+                    {/* LOGUEADO COMO USER COMÚN */}
                     {token && user?.rol === 'user' && (
                         <>
                             <Button color="success" variant="contained" disabled sx={{ color: '#fff !important' }}>Estadísticas</Button>
