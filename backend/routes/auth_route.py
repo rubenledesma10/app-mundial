@@ -2,7 +2,8 @@ from sqlalchemy.exc import IntegrityError
 from flask import Blueprint, request, jsonify
 from models.db import db
 from models.user import User
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from werkzeug.utils import secure_filename
 from datetime import date
 import os
 
@@ -112,3 +113,67 @@ def login():
         }), 200
     except Exception as e:
         return jsonify({'message': 'Error during login', 'error': str(e)}), 500
+    
+@auth_bp.route('/perfil', methods=['GET'])
+@jwt_required()
+def get_current_user_profile():
+    try:
+        # 🟢 get_jwt_identity() recupera el ID del usuario desde el Token JWT
+        current_user_id = get_jwt_identity()
+        user = User.query.get(current_user_id)
+        
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
+            
+        return jsonify({
+            'user': {
+                'id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'dni': user.dni,
+                'birthdate': user.birthdate.isoformat() if user.birthdate else None,
+                'photo': user.photo,
+                'rol': user.rol
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({'message': 'Error fetching profile', 'error': str(e)}), 500
+
+
+@auth_bp.route('/perfil', methods=['PUT'])
+@jwt_required()
+def update_current_user_profile():
+    try:
+        current_user_id = get_jwt_identity()
+        user = User.query.get(current_user_id)
+        
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
+
+        data = request.form if request.form else request.get_json()
+        if not data:
+            return jsonify({'message': 'No data provided'}), 400
+
+        if 'first_name' in data:
+            user.first_name = data.get('first_name')
+        if 'last_name' in data:
+            user.last_name = data.get('last_name')
+
+        if 'password' in data and data.get('password').strip() != '':
+            user.set_password(data.get('password'))
+
+        if 'photo' in request.files:
+            file = request.files['photo']
+            if file and file.filename != '':
+                filename = secure_filename(f"user_{user.id}_{file.filename}")
+                filepath = os.path.join('static/uploads', filename)
+                file.save(filepath)
+                user.photo = f"static/uploads/{filename}"
+
+        db.session.commit()
+        return jsonify({'message': 'Profile updated successfully'}), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'Error updating profile', 'error': str(e)}), 500
