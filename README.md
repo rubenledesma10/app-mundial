@@ -1,96 +1,358 @@
-🏆 Aplicación Web: Mundial de Fútbol (IES 9-023)
+# 🏆 Aplicación Web: Mundial de Fútbol (IES 9-023)
 
-[cite_start]Plataforma web integral diseñada para la gestión de jugagores y usuarios[cite: 3, 22]. [cite_start]Este proyecto fue desarrollado bajo una arquitectura Modelo-Vista-Controlador (MVC) desacoplada, cumpliendo con las directrices y requerimientos técnicos del parcial de **Programación III**[cite: 6, 115].
-
----
-
-## 👥 Integrantes del Grupo
-* **Ruben Ledesma** - Fullstack Developer
-* **Rodrigo Espinosa** - Fullstack Developer
-* **Santiago Romano** - Fullstack Developer
+Plataforma web integral diseñada para la gestión de jugadores y usuarios. Este proyecto fue desarrollado bajo una arquitectura **Modelo-Vista-Controlador (MVC)** desacoplada, cumpliendo con las directrices y requerimientos técnicos del parcial de **Programación III**.
 
 ---
 
-## 🛠️ Stack Tecnológico Obligatorio
-[cite_start]De acuerdo a las tecnologías exigidas por la cátedra, el sistema implementa[cite: 8]:
+# 👥 Integrantes del Grupo
 
-* [cite_start]**Frontend:** React (Vite) [cite: 10][cite_start], Material UI (MUI) [cite: 11][cite_start], React Router Dom (Navegación entre vistas)[cite: 57].
-* [cite_start]**Backend:** Flask [cite: 14][cite_start], SQLAlchemy (Mapeo de POO)[cite: 75], PyMySQL (Driver de conexión).
-* [cite_start]**Base de Datos:** MySQL[cite: 15].
-* [cite_start]**Control de Versiones:** Git & GitHub[cite: 18, 19].
+* **Ruben Ledesma** — Fullstack Developer
+* **Rodrigo Espinosa** — Fullstack Developer
+* **Santiago Romano** — Fullstack Developer
 
 ---
 
-## 🔍 Cumplimiento de Requisitos del Parcial
+# 🛠️ Stack Tecnológico
 
-Para facilitar la corrección, se detalla a continuación de qué manera y en qué archivos se implementaron las directrices obligatorias de la consigna:
+## Frontend
 
-### 1. Requisitos Funcionales y Control de Accesos
-* [cite_start]**Registro de usuarios públicos:** Implementado en la ruta `POST /api/auth/register` de Flask y consumido en `src/pages/Registro.jsx`[cite: 23].
-* [cite_start]**Inicio de Sesión (Login):** Gestionado mediante `POST /api/auth/login`[cite: 24]. Valida credenciales e impide el acceso si la cuenta se encuentra desactivada por un administrador.
-* [cite_start]**Cierre de Sesión (Logout):** Remueve los tokens de sesión de manera segura en el cliente[cite: 26].
-* [cite_start]**Roles (Admin / Users):** Se diferencian los accesos tanto en el Frontend mediante rutas condicionales como en el Backend mediante decoradores de ruta[cite: 27].
+* React (Vite)
+* Material UI (MUI)
+* React Router DOM
 
-### 2. Frontend React: Uso Obligatorio de Hooks
-[cite_start]La lógica de la interfaz de usuario se resolvió aplicando estrictamente los Hooks requeridos[cite: 31, 32]:
-* [cite_start]**`useState`:** Utilizado para el manejo de formularios (Login, Registro, Edición de Perfil), almacenamiento de estados de carga (`loading`, `error`) y el guardado de datos dinámicos obtenidos desde la API (`users`, `players`)[cite: 34, 35, 36, 37].
-* [cite_start]**`useEffect`:** Implementado para la carga inicial de datos (tablas de backoffice y perfil propio) y la actualización de información en tiempo real ante eventos de filtrado[cite: 38, 41, 42].
-* [cite_start]**`useContext`:** Empleado para la gestión global del estado de autenticación de la aplicación (`AuthContext`), permitiendo compartir la sesión del usuario activo de forma transversal entre todos los componentes y barras de navegación[cite: 43, 45, 46].
-* [cite_start]**Custom Hook Obligatorio:** Se diseñó y aplicó el hook personalizado **`useAuth()`** para encapsular la lógica de validación, persistencia de tokens y acceso rápido a los datos de la sesión activa[cite: 47, 50].
+## Backend
 
-### 3. Backend Flask: API REST y POO
-* [cite_start]**Módulo Asignado (CRUD de Jugadores y Usuarios):** Implementación completa de operaciones para Crear, Consultar, Modificar y Eliminar tanto para el catálogo mundialista como para el control interno de accesos[cite: 68, 69, 70, 71, 72, 73].
-* **Programación Orientada a Objetos (POO):** Aplicada en los modelos de base de datos definidos en el servidor (`User`, `Player`, `NationalTeam`). [cite_start]Se utilizan los principios de[cite: 74, 75]:
-  * [cite_start]*Encapsulamiento:* Métodos internos en los modelos como `.set_password()` para abstracción de hashing de claves[cite: 76].
-  * [cite_start]*Herencia y Abstracción:* Estructuras base compartidas (como entidades que heredan campos comunes o representaciones de personas)[cite: 76].
+* Flask
+* SQLAlchemy
+* PyMySQL
 
-### 4. Integración de Consumo Híbrido (Desarrollo en Equipo)
-[cite_start]Como resultado del trabajo colaborativo mediante ramas de Git (*feature branches*) y Pull Requests, la comunicación con la API se resolvió mediante un esquema híbrida[cite: 12, 83]:
-* **Axios:** Implementado en formularios complejos (Registro y Mi Perfil) por su óptima flexibilidad para la serialización y transporte binario de objetos `FormData` (subida de fotos físicas y captura web).
-* [cite_start]**Fetch API:** Utilizado de forma nativa en componentes estándar para el consumo de datos directos en formato JSON crudo[cite: 12].
+## Base de Datos
+
+* MySQL
+
+## Control de Versiones
+
+* Git
+* GitHub
 
 ---
 
-## 🚀 Desafíos Extra Implementados (Opcionales)
-[cite_start]Para robustecer la arquitectura, el grupo asumió el desarrollo de los siguientes desafíos opcionales sugeridos[cite: 110]:
-1. [cite_start]**Autenticación JWT:** Reemplazo de sesiones tradicionales por la implementación estricta de tokens Web JSON (`Flask-JWT-Extended`) pasados en las cabeceras `Authorization: Bearer`[cite: 111].
-2. [cite_start]**Búsquedas y Filtros Avanzados:** El endpoint `/api/players/search` cuenta con un motor avanzado utilizando operadores `ilike` y lógicas cruzadas de SQLAlchemy que permiten filtrar por coincidencia global (`q`) o rangos estadísticos exactos (goles mínimos, asistencias, tarjetas amarillas/rojas acumuladas)[cite: 112].
-3. **Módulo Multimedia en Perfil:** Integración de la API de medios nativa del navegador para permitir a los usuarios capturar fotos de perfil directamente desde su **cámara web (Webcam)** o subir archivos locales.
+# 🔍 Cumplimiento de Requisitos del Parcial
+
+## 1. Requisitos Funcionales y Control de Accesos
+
+### Registro de Usuarios
+
+Implementado mediante la ruta:
+
+```http
+POST /api/auth/register
+```
+
+Consumido desde:
+
+```text
+src/pages/Registro.jsx
+```
+
+### Inicio de Sesión (Login)
+
+Implementado mediante:
+
+```http
+POST /api/auth/login
+```
+
+Valida credenciales e impide el acceso a usuarios desactivados por un administrador.
+
+### Cierre de Sesión (Logout)
+
+Elimina de forma segura la información de autenticación almacenada en el cliente.
+
+### Roles (Administrador y Usuario)
+
+Se implementó control de acceso tanto en el frontend mediante rutas protegidas como en el backend mediante validaciones y decoradores.
 
 ---
 
-## 📊 Documentación de la API
-[cite_start]Toda la especificación de endpoints, métodos HTTP permitidos (GET, POST, PUT, PATCH, DELETE) y payloads de ejemplo se encuentran publicados en el entorno oficial de documentación[cite: 96, 97]:
+## 2. Frontend React: Uso de Hooks
 
-🔗 **[Colección Publicada de Postman - App Mundial](https://documenter.getpostman.com/view/31369461/2sBXwvKUqh)**
+### useState
+
+Utilizado para:
+
+* Manejo de formularios.
+* Estados de carga.
+* Gestión de errores.
+* Almacenamiento de datos obtenidos desde la API.
+
+### useEffect
+
+Utilizado para:
+
+* Carga inicial de datos.
+* Actualización automática de información.
+* Sincronización con cambios de filtros y vistas.
+
+### useContext
+
+Implementado mediante `AuthContext` para compartir globalmente la información de autenticación entre componentes.
+
+### Custom Hook: useAuth()
+
+Se desarrolló el hook personalizado:
+
+```javascript
+useAuth()
+```
+
+Encargado de:
+
+* Gestionar la autenticación.
+* Persistir tokens.
+* Centralizar el acceso a los datos de sesión.
 
 ---
 
-## 📐 Modelado UML
-[cite_start]*De acuerdo a lo requerido, a continuación se adjunta la ruta al diagrama de representación de clases principales del sistema[cite: 92, 95]:*
+## 3. Backend Flask: API REST y Programación Orientada a Objetos
+
+### CRUD de Jugadores y Usuarios
+
+Implementación completa de operaciones:
+
+* Crear
+* Consultar
+* Modificar
+* Eliminar
+
+sobre jugadores y usuarios.
+
+### Aplicación de POO
+
+Los modelos principales son:
+
+* User
+* Player
+* NationalTeam
+
+#### Encapsulamiento
+
+Se utilizan métodos internos para abstraer procesos sensibles como el hashing de contraseñas:
+
+```python
+user.set_password(password)
+```
+
+#### Herencia y Abstracción
+
+Se implementaron estructuras compartidas para reutilizar atributos y comportamientos comunes entre entidades.
+
+---
+
+## 4. Integración de Consumo Híbrido
+
+Como resultado del trabajo colaborativo mediante ramas Git y Pull Requests, se implementó una estrategia híbrida para el consumo de la API.
+
+### Axios
+
+Utilizado principalmente en:
+
+* Registro de usuarios.
+* Gestión de perfil.
+* Envío de formularios complejos.
+* Subida de imágenes mediante FormData.
+
+### Fetch API
+
+Utilizado en:
+
+* Consultas simples.
+* Consumo de datos JSON.
+* Operaciones estándar de lectura.
+
+---
+
+# 🚀 Funcionalidades Adicionales
+
+## 1. Autenticación JWT
+
+Implementación mediante:
+
+```text
+Flask-JWT-Extended
+```
+
+Los tokens son enviados mediante el encabezado:
+
+```http
+Authorization: Bearer <token>
+```
+
+---
+
+## 2. Búsquedas y Filtros Avanzados
+
+El endpoint:
+
+```http
+GET /api/players/search
+```
+
+permite realizar búsquedas por:
+
+* Nombre.
+* Coincidencia global.
+* Goles mínimos.
+* Asistencias.
+* Tarjetas amarillas.
+* Tarjetas rojas.
+
+Utilizando filtros avanzados de SQLAlchemy.
+
+---
+
+## 3. Gestión Multimedia de Perfil
+
+Los usuarios pueden:
+
+* Subir imágenes desde su dispositivo.
+* Capturar fotografías directamente desde la cámara web.
+* Actualizar su foto de perfil.
+
+---
+
+# 📊 Documentación de la API
+
+Toda la documentación de endpoints, métodos HTTP y ejemplos de uso se encuentra disponible en:
+
+🔗 **Colección Postman**
+
+https://documenter.getpostman.com/view/31369461/2sBXwvKUqh
+
+---
+
+# 📐 Modelado UML
+
+A continuación se presenta el diagrama de clases principal del sistema:
+
+```markdown
+![Diagrama UML de Clases](backend/static/uploads/diagramaclases.png)
+```
 
 ![Diagrama UML de Clases](backend/static/uploads/diagramaclases.png)
 
 ---
 
-## [cite_start]🔧 Instrucciones de Instalación y Despliegue Local [cite: 90]
+# 🔧 Instalación y Ejecución Local
 
-### Configuración del Servidor (Backend)
-1. Navegar a la carpeta correspondiente:
-   ```bash
-   cd backend
-Crear y activar el entorno virtual de Python:Bashpython -m venv venv
-# En Windows:
+## Configuración del Backend
+
+### 1. Ingresar a la carpeta del servidor
+
+```bash
+cd backend
+```
+
+### 2. Crear entorno virtual
+
+```bash
+python -m venv venv
+```
+
+### 3. Activar entorno virtual
+
+#### Windows
+
+```bash
 .\venv\Scripts\activate
-# En Mac/Linux:
+```
+
+#### Linux / macOS
+
+```bash
 source venv/bin/activate
-Instalar dependencias obligatorias:Bashpip install -r requirements.txt
-Configurar las variables de entorno locales creando un archivo .env en la raíz de /backend:Fragmento de códigoFLASK_APP=app.py
+```
+
+### 4. Instalar dependencias
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Configurar variables de entorno
+
+Crear un archivo `.env`:
+
+```env
+FLASK_APP=app.py
 FLASK_ENV=development
 JWT_SECRET_KEY=clave_secreta_para_desarrollo_local
 SQLALCHEMY_DATABASE_URI=mysql+pymysql://USUARIO:PASSWORD@localhost:3306/nombre_de_tu_bd
-Estructuración y Seeding de la BD: Para borrar tablas obsoletas, generar el esquema físico nuevo y cargar automáticamente el Administrador del sistema y las entidades iniciales del mundial, ejecutar:  Bashpython seed.py
-Inicializar la API:Bashpython app.py
-Configuración del Cliente (Frontend)Abrir otra terminal y situarse en la carpeta del cliente:Bashcd frontend
-Descargar los paquetes de Node:Bashnpm install
-Ejecutar el servidor local:Bashnpm run dev
+```
+
+### 6. Inicializar la base de datos
+
+```bash
+python seed.py
+```
+
+### 7. Ejecutar el servidor
+
+```bash
+python app.py
+```
+
+---
+
+## Configuración del Frontend
+
+### 1. Ingresar a la carpeta del cliente
+
+```bash
+cd frontend
+```
+
+### 2. Instalar dependencias
+
+```bash
+npm install
+```
+
+### 3. Ejecutar aplicación
+
+```bash
+npm run dev
+```
+
+---
+
+# 📍 Acceso a la Aplicación
+
+Una vez iniciados ambos servicios:
+
+| Servicio | URL                   |
+| -------- | --------------------- |
+| Frontend | http://localhost:5173 |
+| Backend  | http://localhost:5000 |
+
+---
+
+# 🌳 Flujo de Trabajo con Git
+
+El desarrollo se realizó utilizando una estrategia basada en ramas, por ejemplo:
+
+```text
+main
+└── develop
+    ├── feature/frontend
+    ├── feature/backend
+    └── feature/auth
+```
+
+Utilizando Pull Requests para integrar funcionalidades y mantener la estabilidad del proyecto.
+
+---
+
+# 📄 Licencia
+
+Proyecto desarrollado con fines académicos para la materia **Programación III** del **IES 9-023**.
