@@ -1,0 +1,129 @@
+.player-form-modal-title {
+  text-align: center;
+  font-weight: bold;
+  color: #000000;
+}
+
+.player-form-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  margin-top: 8px;
+  align-items: flex-start;
+}
+
+.player-form-photo-column {
+  width: 260px;
+}
+
+.player-form-fields-column {
+  width: 100%;
+}
+
+.player-form-fields-column input[type="date"] {
+  padding-top: 16.5px;
+  padding-bottom: 16.5px;
+}
+
+.player-form-modal-actions {
+  padding: 16px 24px;
+}
+
+.player-photo-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  position: sticky;
+  top: 16px;
+}
+
+.player-photo-preview-box {
+  width: 220px;
+  height: 220px;
+  border: 2px dashed #1976d2;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.player-photo-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.player-photo-placeholder {
+  color: #1976d2;
+  font-weight: bold;
+}
+
+.player-photo-button {
+  height: 56px;
+}
+
+.player-form-section {
+  margin-bottom: 22px;
+}
+
+.player-form-section h3 {
+  margin: 0 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e0e0e0;
+  color: #1976d2;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.player-form-fields-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.player-form-fields-grid.columns-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.player-form-fields-grid.columns-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.player-form-fields-grid.columns-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.player-captain-field {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+}
+
+.player-form-fields-column .MuiTextField-root,
+.player-form-fields-column .MuiFormControl-root {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .player-form-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .player-form-photo-column {
+    width: 100%;
+  }
+
+  .player-photo-panel {
+    position: static;
+  }
+
+  .player-form-fields-grid.columns-2,
+  .player-form-fields-grid.columns-3,
+  .player-form-fields-grid.columns-4 {
+    grid-template-columns: 1fr;
+  }
+}

@@ -27,3 +27,32 @@ class Player(Person): #hereda de persona
             self.yellow_card += new_yellow_card
         if new_red_card>=0:
             self.red_card += new_red_card
+            
+        # Utilicé to_dict() para convertir los objetos Player a JSON y 
+        # evitar repetir los mismos atributos en cada endpoint.
+    def to_dict(self):
+        return {
+        "id": self.id,
+        'full_name': self.get_full_name(),
+        "birthdate": str(self.birthdate),
+        "photo": self.photo,
+        "position": self.position,
+        "tshirt_number": self.tshirt_number,
+        "current_club": self.current_club,
+        "goals": self.goals,
+        "assists": self.assists,
+        "yellow_card": self.yellow_card,
+        "red_card": self.red_card,
+        "total_cards": self.yellow_card + self.red_card,
+        "is_captain": self.is_captain,
+        "weight": self.weight,
+        "height": self.height,
+        "is_active": self.is_active,
+        "national_team": {
+            "id": self.national_team.id_national_teams,
+            "country": self.national_team.country,
+            "technical_director": self.national_team.technical_director,
+            "group": self.national_team.group
+        }
+    }
+    

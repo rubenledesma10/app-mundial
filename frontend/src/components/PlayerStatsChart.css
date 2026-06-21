@@ -1,0 +1,22 @@
+.player-stats-chart {
+  width: 100%;
+  margin-top: 32px;
+  padding: 24px;
+  border-radius: 12px;
+  background-color: #ffffff;
+}
+
+.player-stats-highlight {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #000000;
+}
+
+.player-stats-chart h2 {
+  color: #000000;
+}
+
+.player-stats-chart {
+  text-align: center;
+}
