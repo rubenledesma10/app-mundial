@@ -36,7 +36,7 @@ function PlayerCard({ player, onEdit, onToggleStatus, isPublic = false }) {
           )}
 
           <Typography variant="h6">
-            {player.first_name} {player.last_name}
+            {player.full_name} 
           </Typography>
 
           <Typography>Posición: {player.position}</Typography>

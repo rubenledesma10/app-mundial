@@ -11,29 +11,37 @@ const Navbar = () => {
     navigate('/login');
   };
 
+  // Variable auxiliar para no repetir la lógica condicional del ruteo del Home
+  const homeRedirectRoute = !token ? '/' : user?.rol === 'admin' ? '/admin-home' : '/home';
+
   return (
     <AppBar position="static" sx={{ backgroundColor: '#1e1e2f' }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        
+        {/* TÍTULO DEL SISTEMA (Con la misma lógica de redirección que el botón Home) */}
         <Typography
           variant="h6"
           component={Link}
-          to="/"
+          to={homeRedirectRoute}
           sx={{ textDecoration: 'none', color: '#fff', fontWeight: 'bold' }}
         >
           🏆 Sistema Gestión de Jugadores y Usuarios
         </Typography>
 
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          {/* Botón siempre visible */}
+          
+          
+
+          {/* Botón Home (Siempre visible, ruteo dinámico) */}
           <Button
             color="inherit"
             component={Link}
-            to={!token ? '/' : user?.rol === 'admin' ? '/admin-home' : '/home'}
+            to={homeRedirectRoute}
           >
             Home
           </Button>
 
-          {/*  NO LOGUEADO */}
+          {/* CASO: USUARIO NO LOGUEADO */}
           {!token && (
             <>
               <Button color="inherit" component={Link} to="/login">
@@ -50,26 +58,24 @@ const Navbar = () => {
             </>
           )}
 
-          {/* LOGUEADO COMO ADMIN */}
+          {/* CASO: LOGUEADO COMO ADMINISTRADOR */}
           {token && user?.rol === 'admin' && (
             <>
               <Button color="inherit" component={Link} to="/admin">
                 CRUD Usuarios
               </Button>
-
               <Button color="error" variant="outlined" onClick={handleLogout}>
                 Cerrar Sesión
               </Button>
             </>
           )}
 
-          {/* LOGUEADO COMO USER COMÚN */}
+          {/* CASO: LOGUEADO COMO USUARIO COMÚN */}
           {token && user?.rol === 'user' && (
             <>
               <Button color="inherit" component={Link} to="/estadisticas">
                 ESTADÍSTICAS
               </Button>
-
               <Button color="inherit" component={Link} to="/perfil">
                 MIS DATOS
               </Button>
@@ -77,6 +83,12 @@ const Navbar = () => {
                 Cerrar Sesión
               </Button>
             </>
+          )}
+          {/* Saludo personalizado usando el método polimórfico del Backend si inició sesión */}
+          {token && user?.full_name && (
+            <Typography variant="body2" sx={{ color: '#ccc', mr: 1, fontStyle: 'italic' }}>
+              Hola, {user.full_name}
+            </Typography>
           )}
         </Box>
       </Toolbar>

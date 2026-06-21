@@ -23,11 +23,11 @@ function StatisticsPage() {
     loadPlayers()
   }, [])
 
-  const goalsData = [...players]
+const goalsData = [...players]
     .sort((a, b) => b.goals - a.goals)
     .slice(0, 10)
     .map((player) => ({
-      nombre: `${player.first_name} ${player.last_name}`,
+      nombre: player.full_name || 'Sin Nombre', // 🟢 Directo y limpio
       goles: player.goals,
     }))
 
@@ -35,7 +35,7 @@ function StatisticsPage() {
     .sort((a, b) => b.assists - a.assists)
     .slice(0, 10)
     .map((player) => ({
-      nombre: `${player.first_name} ${player.last_name}`,
+      nombre: player.full_name || 'Sin Nombre',
       asistencias: player.assists,
     }))
 
@@ -43,7 +43,7 @@ function StatisticsPage() {
     .sort((a, b) => b.yellow_card - a.yellow_card)
     .slice(0, 10)
     .map((player) => ({
-      nombre: `${player.first_name} ${player.last_name}`,
+      nombre: player.full_name || 'Sin Nombre',
       amarillas: player.yellow_card,
     }))
 
@@ -51,7 +51,7 @@ function StatisticsPage() {
     .sort((a, b) => b.red_card - a.red_card)
     .slice(0, 10)
     .map((player) => ({
-      nombre: `${player.first_name} ${player.last_name}`,
+      nombre: player.full_name || 'Sin Nombre',
       rojas: player.red_card,
     }))
 
