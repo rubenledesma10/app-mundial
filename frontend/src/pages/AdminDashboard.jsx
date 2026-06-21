@@ -244,7 +244,7 @@ const AdminDashboard = () => {
                                     {filteredUsers.map((u) => (
                                         <TableRow key={u.id} hover>
                                             <TableCell>{u.id}</TableCell>
-                                            <TableCell>{u?.last_name || ''}, {u?.first_name || ''}</TableCell>
+                                            <TableCell>{u?.full_name || 'Sin nombre'}</TableCell>
                                             <TableCell>{u.dni}</TableCell>
                                             <TableCell>{u.email}</TableCell>
                                             <TableCell>
