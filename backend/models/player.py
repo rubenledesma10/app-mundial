@@ -33,8 +33,7 @@ class Player(Person): #hereda de persona
     def to_dict(self):
         return {
         "id": self.id,
-        "first_name": self.first_name,
-        "last_name": self.last_name,
+        'full_name': self.get_full_name(),
         "birthdate": str(self.birthdate),
         "photo": self.photo,
         "position": self.position,
