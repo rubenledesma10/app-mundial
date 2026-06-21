@@ -41,6 +41,7 @@ function PlayerCard({ player, onEdit, onDelete }) {
 
           <Typography>Posición: {player.position}</Typography>
           <Typography>Camiseta: {player.tshirt_number}</Typography>
+          <Typography>Selección: {player.national_team?.country || '-'}</Typography>
           <Typography>Club: {player.current_club}</Typography>
           <Typography>Fecha de nacimiento: {player.birthdate || '-'}</Typography>
           <Typography>Peso: {player.weight || '-'}</Typography>

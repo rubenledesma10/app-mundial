@@ -1,36 +1,29 @@
-import { useState } from 'react'
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useEffect, useState } from 'react'
 import { Button, Container, Typography } from '@mui/material'
 import PlayerFormModal from '../components/PlayerFormModal'
 import PlayerCard from '../components/PlayerCard'
+import {
+  getPlayers,
+  createPlayer,
+  updatePlayer,
+  deletePlayer,
+} from '../services/playerService'
 import './AdminPlayersPage.css'
-
-const mockPlayers = [
-  {
-    id: 1,
-    first_name: 'Lionel',
-    last_name: 'Messi',
-    position: 'Delantero',
-    tshirt_number: 10,
-    current_club: 'Inter Miami',
-    goals: 15,
-    assists: 8,
-  },
-  {
-    id: 2,
-    first_name: 'Kylian',
-    last_name: 'Mbappé',
-    position: 'Delantero',
-    tshirt_number: 9,
-    current_club: 'Real Madrid',
-    goals: 12,
-    assists: 4,
-  },
-]
 
 function AdminPlayersPage() {
   const [openModal, setOpenModal] = useState(false)
-  const [players, setPlayers] = useState(mockPlayers)
+  const [players, setPlayers] = useState([])
   const [selectedPlayer, setSelectedPlayer] = useState(null)
+
+  const loadPlayers = async () => {
+    const data = await getPlayers()
+    setPlayers(data)
+  }
+
+  useEffect(() => {
+    loadPlayers()
+  }, [])
 
   const handleOpenModal = () => {
     setSelectedPlayer(null)
@@ -39,26 +32,17 @@ function AdminPlayersPage() {
 
   const handleCloseModal = () => {
     setOpenModal(false)
+    setSelectedPlayer(null)
   }
 
-  const handleSavePlayer = (playerData) => {
-  if (selectedPlayer) {
-    const updatedPlayers = players.map((player) =>
-      player.id === selectedPlayer.id
-        ? { ...player, ...playerData }
-        : player
-    )
-
-    setPlayers(updatedPlayers)
-  } else {
-      const newPlayer = {
-        ...playerData,
-        id: Date.now(),
-      }
-
-      setPlayers([...players, newPlayer])
+  const handleSavePlayer = async (playerData) => {
+    if (selectedPlayer) {
+      await updatePlayer(selectedPlayer.id, playerData)
+    } else {
+      await createPlayer(playerData)
     }
 
+    await loadPlayers()
     setOpenModal(false)
     setSelectedPlayer(null)
   }
@@ -68,13 +52,13 @@ function AdminPlayersPage() {
     setOpenModal(true)
   }
 
-  const handleDeletePlayer = (id) => {
-  const confirmDelete = window.confirm('¿Seguro que querés eliminar este jugador?')
+  const handleDeletePlayer = async (id) => {
+    const confirmDelete = window.confirm('¿Seguro que querés eliminar este jugador?')
 
-  if (!confirmDelete) return
+    if (!confirmDelete) return
 
-  const filteredPlayers = players.filter((player) => player.id !== id)
-    setPlayers(filteredPlayers)
+    await deletePlayer(id)
+    await loadPlayers()
   }
 
   return (

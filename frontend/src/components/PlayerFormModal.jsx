@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from 'react'
 import {
   Dialog,
@@ -88,8 +89,17 @@ function PlayerFormModal({ open, onClose, onSave, playerSelected }) {
   const [form, setForm] = useState(initialForm)
 
   useEffect(() => {
-    setForm(playerSelected || initialForm)
-  }, [playerSelected])
+      if (playerSelected) {
+        setForm({
+          ...initialForm,
+          ...playerSelected,
+          id_national_teams:
+            playerSelected.national_team?.id || 1,
+        })
+      } else {
+        setForm(initialForm)
+      }
+    }, [playerSelected])
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target
@@ -173,7 +183,7 @@ function PlayerFormModal({ open, onClose, onSave, playerSelected }) {
               <div className="player-form-fields-grid columns-3">
                 <FormControl fullWidth>
                   <InputLabel>Selección</InputLabel>
-                  <Select name="id_national_teams" value={form.id_national_teams} label="Selección" onChange={handleChange}>
+                  <Select name="id_national_teams" value={form.id_national_teams || 1} label="Selección" onChange={handleChange}>
                     {nationalTeams.map((team) => (
                       <MenuItem key={team.id} value={team.id}>
                         {team.country}
