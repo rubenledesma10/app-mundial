@@ -50,14 +50,14 @@ const Navbar = () => {
           {token && user?.rol === 'admin' && (
             <>
               <Button
-                color="warning"
-                variant="contained"
-                component={Link}
-                to="/admin"
-                sx={{ fontWeight: 'bold' }}
-              >
+                color="inherit" component={Link} to="/admin">
                 CRUD Usuarios
               </Button>
+
+              <Button color="inherit" component={Link} to="/card">
+                CRUD Jugadores
+              </Button>
+              
               <Button color="error" variant="outlined" onClick={handleLogout}>
                 Cerrar Sesión
               </Button>
@@ -69,6 +69,9 @@ const Navbar = () => {
             <>
               <Button color="inherit" component={Link} to="/estadisticas">
                 ESTADÍSTICAS
+              </Button>
+              <Button color="inherit" component={Link} to="/players">
+                FILTROS
               </Button>
               <Button color="inherit" component={Link} to="/perfil">
                 MIS DATOS
