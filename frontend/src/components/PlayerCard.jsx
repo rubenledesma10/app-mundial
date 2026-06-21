@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import './PlayerCard.css'
 
-function PlayerCard({ player, onEdit, onDelete }) {
+function PlayerCard({ player, onEdit, onDelete, isPublic = false }) {
   const [openStats, setOpenStats] = useState(false)
 
   return (
@@ -47,7 +47,8 @@ function PlayerCard({ player, onEdit, onDelete }) {
           <Typography>Peso: {player.weight || '-'}</Typography>
           <Typography>Altura: {player.height || '-'}</Typography>
         </CardContent>
-
+        
+        {!isPublic && (
         <CardActions>
           <Button size="small" onClick={() => onEdit(player)}>
             Editar
@@ -61,7 +62,9 @@ function PlayerCard({ player, onEdit, onDelete }) {
             Ver estadísticas
           </Button>
         </CardActions>
-      </Card>
+         
+        )}
+        </Card>
 
       <Dialog open={openStats} onClose={() => setOpenStats(false)} fullWidth maxWidth="sm">
           <DialogTitle
