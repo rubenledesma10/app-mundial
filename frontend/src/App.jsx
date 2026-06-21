@@ -8,7 +8,6 @@ import Registro from './pages/Registro';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminRegistro from './pages/AdminRegistro';
 import AdminEditarUsuario from './pages/AdminEditarUsuario';
-import AdminPlayersPage from './pages/AdminPlayersPage';
 import StatisticsPage from './pages/StatisticsPage';
 import ProfilePage from './pages/ProfilePage';
 
@@ -28,7 +27,6 @@ function App() {
           <Route path="/" element={<HomePublic />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Registro />} />
-          <Route path="/card" element={<AdminPlayersPage />} />
           <Route path="/estadisticas" element={<StatisticsPage />} />
           <Route path="/perfil" element={<ProfilePage />} />
 

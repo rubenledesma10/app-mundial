@@ -27,6 +27,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const AdminDashboard = () => {
     const { token } = useAuth();
@@ -39,9 +40,9 @@ const AdminDashboard = () => {
     const [statusFilter, setStatusFilter] = useState('all');
     const [alphabeticalOrder, setAlphabeticalOrder] = useState('none');
 
-   
+
     useEffect(() => {
-      
+
         if (query.trim() === '') {
             const fetchAllUsers = async () => {
                 try {
@@ -125,7 +126,7 @@ const AdminDashboard = () => {
                 setLoading(true);
                 setError('');
 
-  
+
                 await axios.put(`http://localhost:5000/api/users/${userId}/toggle`, {}, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
@@ -263,11 +264,20 @@ const AdminDashboard = () => {
                                                             <EditIcon />
                                                         </IconButton>
                                                     </Tooltip>
-                                                    <Tooltip title="Eliminar Usuario">
-                                                        <IconButton color="error" onClick={() => handleEliminar(u.id, u.is_active)}>
-                                                            <DeleteIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
+
+                                                    {u.is_active ? (
+                                                        <Tooltip title="Desactivar Usuario">
+                                                            <IconButton color="error" onClick={() => handleEliminar(u.id, u.is_active)}>
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    ) : (
+                                                        <Tooltip title="Activar Usuario">
+                                                            <IconButton color="success" onClick={() => handleEliminar(u.id, u.is_active)}>
+                                                                <CheckCircleIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    )}
                                                 </Box>
                                             </TableCell>
                                         </TableRow>
