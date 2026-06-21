@@ -1,3 +1,4 @@
+import Players from './pages/Players';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
@@ -6,14 +7,9 @@ import Login from './pages/Login';
 import Registro from './pages/Registro';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminRegistro from './pages/AdminRegistro';
-import AdminEditarUsuario from './pages/AdminEditarUsuario'; 
-
-const Home = () => (
-  <div style={{ padding: '40px', textAlign: 'center' }}>
-    <h1>🏠 Home Pública (Mundial 2026)</h1>
-    <p>Sección libre. Usá la barra de navegación de arriba para interactuar.</p>
-  </div>
-);
+import AdminEditarUsuario from './pages/AdminEditarUsuario';
+import HomePublic from './pages/HomePublic';
+import HomePrivate from './pages/HomePrivate';
 
 function App() {
   return (
@@ -23,19 +19,28 @@ function App() {
 
         <Routes>
           {/* rutas publicas */}
-          <Route path="/" element={<Home />} />
+          <Route path="/players" element={<Players />} />
+          <Route path="/" element={<HomePublic />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Registro />} />
-          
+
+          {/* Privadas para cualquier usuario autenticado */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/home" element={<HomePrivate />} />
+          </Route>
+
           {/* rutas privadas, solo para admin */}
           <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
             <Route path="/admin" element={<AdminDashboard />} />
-            
+
             {/* NUEVA RUTA PROTEGIDA PARA EL FORMULARIO DE ADMIN */}
             <Route path="/admin/nuevo-usuario" element={<AdminRegistro />} />
-            
+
             {/* NUEVA RUTA DINÁMICA PROTEGIDA PARA EDITAR POR ID */}
-            <Route path="/admin/editar-usuario/:id" element={<AdminEditarUsuario />} />
+            <Route
+              path="/admin/editar-usuario/:id"
+              element={<AdminEditarUsuario />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>
