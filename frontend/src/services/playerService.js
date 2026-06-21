@@ -52,3 +52,25 @@ export const deletePlayer = async (id) => {
 
   return response.json()
 }
+
+export const updatePlayerStatus = async (id, isActive) => {
+  const response = await fetch(`${API_URL}/api/players/${id}/status`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify({
+      is_active: isActive,
+    }),
+  })
+
+  const data = await response.json()
+  console.log('STATUS RESPONSE:', response.status, data)
+
+  if (!response.ok) {
+    throw new Error(data.error || data.Message || 'Error al actualizar estado')
+  }
+
+  return data
+}

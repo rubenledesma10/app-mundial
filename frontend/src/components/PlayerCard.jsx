@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import './PlayerCard.css'
 
-function PlayerCard({ player, onEdit, onDelete, isPublic = false }) {
+function PlayerCard({ player, onEdit, onToggleStatus, isPublic = false }) {
   const [openStats, setOpenStats] = useState(false)
 
   return (
@@ -46,6 +46,14 @@ function PlayerCard({ player, onEdit, onDelete, isPublic = false }) {
           <Typography>Fecha de nacimiento: {player.birthdate || '-'}</Typography>
           <Typography>Peso: {player.weight || '-'}</Typography>
           <Typography>Altura: {player.height || '-'}</Typography>
+          <Typography>⚽ Goles: {player.goals || 0}</Typography>
+          <Typography>🎯 Asistencias: {player.assists || 0}</Typography>
+          {isPublic && (
+          <>
+            <Typography>🟨 Amarillas: {player.yellow_card}</Typography>
+            <Typography>🟥 Rojas: {player.red_card}</Typography>
+          </>
+        )}
         </CardContent>
         
         {!isPublic && (
@@ -54,8 +62,13 @@ function PlayerCard({ player, onEdit, onDelete, isPublic = false }) {
             Editar
           </Button>
 
-          <Button size="small" color="error" onClick={() => onDelete(player.id)}>
-            Eliminar
+          <Button
+            size="small"
+            color={player.is_active ? 'success' : 'error'}
+            variant="contained"
+            onClick={() => onToggleStatus(player)}
+          >
+            {player.is_active ? 'Activo' : 'Inactivo'}
           </Button>
 
           <Button size="small" onClick={() => setOpenStats(true)}>
