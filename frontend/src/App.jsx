@@ -8,11 +8,11 @@ import Registro from './pages/Registro';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminRegistro from './pages/AdminRegistro';
 import AdminEditarUsuario from './pages/AdminEditarUsuario';
-import AdminPlayersPage from './pages/AdminPlayersPage'
-import StatisticsPage from './pages/StatisticsPage'
-import ProfilePage from './pages/ProfilePage'
+import AdminPlayersPage from './pages/AdminPlayersPage';
+import StatisticsPage from './pages/StatisticsPage';
+import ProfilePage from './pages/ProfilePage';
 
-
+import HomeAdmin from './pages/HomeAdmin';
 import HomePublic from './pages/HomePublic';
 import HomePrivate from './pages/HomePrivate';
 
@@ -31,7 +31,6 @@ function App() {
           <Route path="/card" element={<AdminPlayersPage />} />
           <Route path="/estadisticas" element={<StatisticsPage />} />
           <Route path="/perfil" element={<ProfilePage />} />
-          
 
           {/* Privadas para cualquier usuario autenticado */}
           <Route element={<ProtectedRoute />}>
@@ -39,6 +38,7 @@ function App() {
           </Route>
 
           {/* rutas privadas, solo para admin */}
+          <Route path="/admin-home" element={<HomeAdmin />} />
           <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
             <Route path="/admin" element={<AdminDashboard />} />
 
