@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -13,8 +13,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
-} from '@mui/material'
-import './PlayerFormModal.css'
+} from '@mui/material';
+import './PlayerFormModal.css';
 
 const nationalTeams = [
   { id: 1, country: 'México' },
@@ -65,7 +65,9 @@ const nationalTeams = [
   { id: 46, country: 'Croacia' },
   { id: 47, country: 'Ghana' },
   { id: 48, country: 'Panamá' },
-]
+];
+
+const positions = ['Arquero', 'Defensor', 'Mediocampista', 'Delantero'];
 
 const initialForm = {
   first_name: '',
@@ -83,49 +85,48 @@ const initialForm = {
   is_captain: false,
   weight: '',
   height: '',
-}
+};
 
 function PlayerFormModal({ open, onClose, onSave, playerSelected }) {
-  const [form, setForm] = useState(initialForm)
+  const [form, setForm] = useState(initialForm);
 
   useEffect(() => {
-      if (playerSelected) {
-        setForm({
-          ...initialForm,
-          ...playerSelected,
-          id_national_teams:
-            playerSelected.national_team?.id || 1,
-        })
-      } else {
-        setForm(initialForm)
-      }
-    }, [playerSelected])
+    if (playerSelected) {
+      setForm({
+        ...initialForm,
+        ...playerSelected,
+        id_national_teams: playerSelected.national_team?.id || 1,
+      });
+    } else {
+      setForm(initialForm);
+    }
+  }, [playerSelected]);
 
   const handleChange = (event) => {
-    const { name, value, type, checked } = event.target
+    const { name, value, type, checked } = event.target;
 
     setForm({
       ...form,
       [name]: type === 'checkbox' ? checked : value,
-    })
-  }
+    });
+  };
 
   const handlePhotoChange = (event) => {
-    const file = event.target.files?.[0]
+    const file = event.target.files?.[0];
 
-    if (!file) return
+    if (!file) return;
 
-    const imageUrl = URL.createObjectURL(file)
+    const imageUrl = URL.createObjectURL(file);
 
     setForm({
       ...form,
       photo: imageUrl,
-    })
-  }
+    });
+  };
 
   const handleSubmit = () => {
-    onSave(form)
-  }
+    onSave(form);
+  };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg">
@@ -171,9 +172,29 @@ function PlayerFormModal({ open, onClose, onSave, playerSelected }) {
               <h3>DATOS PERSONALES</h3>
 
               <div className="player-form-fields-grid columns-3">
-                <TextField fullWidth label="Nombre" name="first_name" value={form.first_name} onChange={handleChange} />
-                <TextField fullWidth label="Apellido" name="last_name" value={form.last_name} onChange={handleChange} />
-                <TextField fullWidth label="Fecha de nacimiento" name="birthdate" type="date" value={form.birthdate} onChange={handleChange} slotProps={{ inputLabel: { shrink: true } }} />
+                <TextField
+                  fullWidth
+                  label="Nombre"
+                  name="first_name"
+                  value={form.first_name}
+                  onChange={handleChange}
+                />
+                <TextField
+                  fullWidth
+                  label="Apellido"
+                  name="last_name"
+                  value={form.last_name}
+                  onChange={handleChange}
+                />
+                <TextField
+                  fullWidth
+                  label="Fecha de nacimiento"
+                  name="birthdate"
+                  type="date"
+                  value={form.birthdate}
+                  onChange={handleChange}
+                  slotProps={{ inputLabel: { shrink: true } }}
+                />
               </div>
             </div>
 
@@ -183,7 +204,12 @@ function PlayerFormModal({ open, onClose, onSave, playerSelected }) {
               <div className="player-form-fields-grid columns-3">
                 <FormControl fullWidth>
                   <InputLabel>Selección</InputLabel>
-                  <Select name="id_national_teams" value={form.id_national_teams || 1} label="Selección" onChange={handleChange}>
+                  <Select
+                    name="id_national_teams"
+                    value={form.id_national_teams || 1}
+                    label="Selección"
+                    onChange={handleChange}
+                  >
                     {nationalTeams.map((team) => (
                       <MenuItem key={team.id} value={team.id}>
                         {team.country}
@@ -192,11 +218,39 @@ function PlayerFormModal({ open, onClose, onSave, playerSelected }) {
                   </Select>
                 </FormControl>
 
-                <TextField fullWidth label="Posición" name="position" value={form.position} onChange={handleChange} />
+                <FormControl fullWidth>
+                  <InputLabel>Posición</InputLabel>
 
-                <TextField fullWidth type="number" label="Número de camiseta" name="tshirt_number" value={form.tshirt_number} onChange={handleChange} />
+                  <Select
+                    name="position"
+                    value={form.position}
+                    label="Posición"
+                    onChange={handleChange}
+                  >
+                    {positions.map((position) => (
+                      <MenuItem key={position} value={position}>
+                        {position}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
 
-                <TextField fullWidth label="Club actual" name="current_club" value={form.current_club} onChange={handleChange} />
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="Número de camiseta"
+                  name="tshirt_number"
+                  value={form.tshirt_number}
+                  onChange={handleChange}
+                />
+
+                <TextField
+                  fullWidth
+                  label="Club actual"
+                  name="current_club"
+                  value={form.current_club}
+                  onChange={handleChange}
+                />
 
                 <div className="player-captain-field">
                   <FormControlLabel
@@ -217,8 +271,22 @@ function PlayerFormModal({ open, onClose, onSave, playerSelected }) {
               <h3>DATOS FÍSICOS</h3>
 
               <div className="player-form-fields-grid columns-2">
-                <TextField fullWidth type="number" label="Altura" name="height" value={form.height} onChange={handleChange} />
-                <TextField fullWidth type="number" label="Peso" name="weight" value={form.weight} onChange={handleChange} />
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="Altura"
+                  name="height"
+                  value={form.height}
+                  onChange={handleChange}
+                />
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="Peso"
+                  name="weight"
+                  value={form.weight}
+                  onChange={handleChange}
+                />
               </div>
             </div>
 
@@ -226,10 +294,38 @@ function PlayerFormModal({ open, onClose, onSave, playerSelected }) {
               <h3>ESTADÍSTICAS</h3>
 
               <div className="player-form-fields-grid columns-4">
-                <TextField fullWidth type="number" label="Goles" name="goals" value={form.goals} onChange={handleChange} />
-                <TextField fullWidth type="number" label="Asistencias" name="assists" value={form.assists} onChange={handleChange} />
-                <TextField fullWidth type="number" label="Amarillas" name="yellow_card" value={form.yellow_card} onChange={handleChange} />
-                <TextField fullWidth type="number" label="Rojas" name="red_card" value={form.red_card} onChange={handleChange} />
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="Goles"
+                  name="goals"
+                  value={form.goals}
+                  onChange={handleChange}
+                />
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="Asistencias"
+                  name="assists"
+                  value={form.assists}
+                  onChange={handleChange}
+                />
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="Amarillas"
+                  name="yellow_card"
+                  value={form.yellow_card}
+                  onChange={handleChange}
+                />
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="Rojas"
+                  name="red_card"
+                  value={form.red_card}
+                  onChange={handleChange}
+                />
               </div>
             </div>
           </div>
@@ -243,7 +339,7 @@ function PlayerFormModal({ open, onClose, onSave, playerSelected }) {
         </Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }
 
-export default PlayerFormModal
+export default PlayerFormModal;
