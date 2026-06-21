@@ -1,24 +1,57 @@
+
+import { useEffect, useState } from 'react'
+import { getProfile, updateProfile } from '../services/profileService'
 import './ProfilePage.css'
 
-const mockUser = {
-  first_name: 'Rodrigo',
-  last_name: 'Espinosa',
-  email: 'rodrigo@email.com',
-  role: 'Administrador',
-  photo: '',
-}
-
 function ProfilePage() {
+  const [user, setUser] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
+
+  useEffect(() => {
+    const loadProfile = async () => {
+        const data = await getProfile()
+        setUser(data.user)
+    }
+
+    loadProfile()
+    }, [])
+
+  const handleChange = (event) => {
+    const { name, value } = event.target
+
+    setUser({
+      ...user,
+      [name]: value,
+    })
+  }
+
+  const handleSave = async () => {
+    const formData = new FormData()
+
+    formData.append('first_name', user.first_name)
+    formData.append('last_name', user.last_name)
+
+    await updateProfile(formData)
+    setIsEditing(false)
+  }
+
+  if (!user) {
+    return <h1 style={{ color: 'white' }}>Cargando perfil...</h1>
+  }
+
   return (
     <div className="profile-page">
       <div className="profile-card">
         <div className="profile-avatar">
-          {mockUser.photo ? (
-            <img src={mockUser.photo} alt="Foto de usuario" />
+          {user.photo ? (
+            <img
+              src={`http://localhost:5000/${user.photo}`}
+              alt="Foto de usuario"
+            />
           ) : (
             <span>
-              {mockUser.first_name[0]}
-              {mockUser.last_name[0]}
+              {user.first_name?.[0]}
+              {user.last_name?.[0]}
             </span>
           )}
         </div>
@@ -26,24 +59,76 @@ function ProfilePage() {
         <h1>Mi Perfil</h1>
 
         <div className="profile-info">
-          <p>
-            <strong>Nombre:</strong> {mockUser.first_name} {mockUser.last_name}
-          </p>
+          {isEditing ? (
+            <>
+              <input
+                name="first_name"
+                value={user.first_name || ''}
+                onChange={handleChange}
+                placeholder="Nombre"
+              />
 
-          <p>
-            <strong>Email:</strong> {mockUser.email}
-          </p>
+              <input
+                name="last_name"
+                value={user.last_name || ''}
+                onChange={handleChange}
+                placeholder="Apellido"
+              />
 
-          <p>
-            <strong>Rol:</strong> {mockUser.role}
-          </p>
+              <p>
+                <strong>Email:</strong> {user.email}
+              </p>
+
+              <p>
+                <strong>DNI:</strong> {user.dni}
+              </p>
+
+              <p>
+                <strong>Rol:</strong> {user.rol}
+              </p>
+            </>
+          ) : (
+            <>
+              <p>
+                <strong>Nombre:</strong> {user.first_name} {user.last_name}
+              </p>
+
+              <p>
+                <strong>Email:</strong> {user.email}
+              </p>
+
+              <p>
+                <strong>DNI:</strong> {user.dni}
+              </p>
+
+              <p>
+                <strong>Rol:</strong> {user.rol}
+              </p>
+            </>
+          )}
         </div>
-        <button
-        className="profile-back-button"
-        onClick={() => window.location.href = '/'}
-        >
-        Volver
-        </button>
+
+        <div className="profile-actions">
+            {isEditing ? (
+                <button className="profile-save-button" onClick={handleSave}>
+                Guardar
+                </button>
+            ) : (
+                <button
+                className="profile-edit-button"
+                onClick={() => setIsEditing(true)}
+                >
+                Editar
+                </button>
+            )}
+
+            <button
+                className="profile-back-button"
+                onClick={() => window.location.href = '/'}
+            >
+                Volver
+            </button>
+            </div>
       </div>
     </div>
   )

@@ -128,7 +128,7 @@ function PlayerFilters({
         onChange={(e) => setMaxAssists(e.target.value)}
       />
       <TextField
-        label="Tarjetas mínimas"
+        label="Tarjetas Amarillas"
         type="number"
         fullWidth
         sx={{ mt: 3 }}
@@ -137,7 +137,7 @@ function PlayerFilters({
       />
 
       <TextField
-        label="Tarjetas máximas"
+        label="Tarjetas Rojas"
         type="number"
         fullWidth
         sx={{ mt: 3 }}

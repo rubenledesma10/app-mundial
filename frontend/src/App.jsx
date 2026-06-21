@@ -28,7 +28,7 @@ function App() {
           <Route path="/" element={<HomePublic />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Registro />} />
-          <Route path="/" element={<AdminPlayersPage />} />
+          <Route path="/card" element={<AdminPlayersPage />} />
           <Route path="/estadisticas" element={<StatisticsPage />} />
           <Route path="/perfil" element={<ProfilePage />} />
           

@@ -6,7 +6,7 @@
 
 .profile-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 550px;
   padding: 32px;
   border-radius: 16px;
   background-color: #ffffff;
@@ -42,6 +42,9 @@
 }
 
 .profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   text-align: left;
 }
 
@@ -50,17 +53,82 @@
   color: #000;
 }
 
+.profile-info label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #000;
+}
+
+.profile-info input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.profile-info input:focus {
+  outline: none;
+  border-color: #1976d2;
+}
+
+.profile-info input:disabled {
+  background-color: #f5f5f5;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.profile-checkbox {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.profile-checkbox input {
+  margin: 0;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.profile-edit-button,
+.profile-save-button,
 .profile-back-button {
-  margin-top: 20px;
   padding: 10px 20px;
   border: none;
   border-radius: 8px;
-  background-color: #1976d2;
-  color: white;
+  color: #ffffff;
   cursor: pointer;
   font-size: 16px;
 }
 
-.profile-back-button:hover {
+.profile-edit-button {
+  background-color: #1976d2;
+}
+
+.profile-save-button {
+  background-color: #2e7d32;
+}
+
+.profile-back-button {
+  background-color: #6b7280;
+}
+
+.profile-edit-button:hover {
   background-color: #1565c0;
+}
+
+.profile-save-button:hover {
+  background-color: #1b5e20;
+}
+
+.profile-back-button:hover {
+  background-color: #4b5563;
 }

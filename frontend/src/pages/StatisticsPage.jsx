@@ -1,73 +1,140 @@
-import PlayerStatsChart from '../components/PlayerStatsChart'
+import { useEffect, useState } from 'react'
+import { getPlayers } from '../services/playerService'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+} from 'recharts'
 import './StatisticsPage.css'
 
-const mockPlayers = [
-  {
-    id: 1,
-    first_name: 'Lionel',
-    last_name: 'Messi',
-    goals: 15,
-    assists: 8,
-    yellow_card: 1,
-    red_card: 0,
-  },
-  {
-    id: 2,
-    first_name: 'Kylian',
-    last_name: 'Mbappé',
-    goals: 12,
-    assists: 4,
-    yellow_card: 3,
-    red_card: 1,
-  },
-  {
-    id: 3,
-    first_name: 'Julián',
-    last_name: 'Álvarez',
-    goals: 8,
-    assists: 6,
-    yellow_card: 2,
-    red_card: 0,
-  },
-]
-
 function StatisticsPage() {
+  const [players, setPlayers] = useState([])
+
+  useEffect(() => {
+    const loadPlayers = async () => {
+      const data = await getPlayers()
+      setPlayers(data)
+    }
+
+    loadPlayers()
+  }, [])
+
+  const goalsData = [...players]
+    .sort((a, b) => b.goals - a.goals)
+    .slice(0, 10)
+    .map((player) => ({
+      nombre: `${player.first_name} ${player.last_name}`,
+      goles: player.goals,
+    }))
+
+  const assistsData = [...players]
+    .sort((a, b) => b.assists - a.assists)
+    .slice(0, 10)
+    .map((player) => ({
+      nombre: `${player.first_name} ${player.last_name}`,
+      asistencias: player.assists,
+    }))
+
+  const yellowData = [...players]
+    .sort((a, b) => b.yellow_card - a.yellow_card)
+    .slice(0, 10)
+    .map((player) => ({
+      nombre: `${player.first_name} ${player.last_name}`,
+      amarillas: player.yellow_card,
+    }))
+
+  const redData = [...players]
+    .sort((a, b) => b.red_card - a.red_card)
+    .slice(0, 10)
+    .map((player) => ({
+      nombre: `${player.first_name} ${player.last_name}`,
+      rojas: player.red_card,
+    }))
+
   return (
-    <div className="statistics-page">
-      <h1>Estadísticas del Mundial</h1>
+  <div className="statistics-page">
+          <h1 className="statistics-title">
+            📊 Estadísticas del Mundial
+          </h1>
 
-      <PlayerStatsChart
-        title="Goles por jugador"
-        players={mockPlayers}
-        dataKey="goals"
-        color="#1976d2"
-      />
+          <div className="statistics-card">
+            <h2>⚽ Top 10 Goleadores</h2>
 
-      <PlayerStatsChart
-        title="Asistencias por jugador"
-        players={mockPlayers}
-        dataKey="assists"
-        color="#2e7d32"
-      />
+            <p className="statistics-leader">
+              🥇 Líder: {goalsData[0]?.nombre} ({goalsData[0]?.goles} goles)
+            </p>
 
-      <PlayerStatsChart
-        title="Tarjetas por jugador"
-        players={mockPlayers}
-        dataKeys={[
-          {
-            key: 'yellow_card',
-            name: 'Amarillas',
-            color: '#FFD700',
-          },
-          {
-            key: 'red_card',
-            name: 'Rojas',
-            color: '#D32F2F',
-          },
-        ]}
-      />
-    </div>
-  )
-}
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={goalsData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="nombre" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="goles" fill="#1976d2" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="statistics-card">
+            <h2>🎯 Top 10 Asistencias</h2>
+
+            <p className="statistics-leader">
+              🥇 Líder: {assistsData[0]?.nombre} ({assistsData[0]?.asistencias} asistencias)
+            </p>
+
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={assistsData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="nombre" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="asistencias" fill="#2e7d32" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="statistics-card">
+            <h2>🟨 Top 10 Tarjetas Amarillas</h2>
+
+            <p className="statistics-leader">
+              🥇 Líder: {yellowData[0]?.nombre} ({yellowData[0]?.amarillas} amarillas)
+            </p>
+
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={yellowData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="nombre" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="amarillas" fill="#fbc02d" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="statistics-card">
+            <h2>🟥 Top 10 Tarjetas Rojas</h2>
+
+            <p className="statistics-leader">
+              🥇 Líder: {redData[0]?.nombre} ({redData[0]?.rojas} rojas)
+            </p>
+
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={redData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="nombre" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="rojas" fill="#d32f2f" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )
+   
+    }
 
 export default StatisticsPage

@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import './PlayerCard.css'
 
-function PlayerCard({ player, onEdit, onDelete }) {
+function PlayerCard({ player, onEdit, onDelete, isPublic = false }) {
   const [openStats, setOpenStats] = useState(false)
 
   return (
@@ -25,19 +25,30 @@ function PlayerCard({ player, onEdit, onDelete }) {
         }`}
       >
         <CardContent>
+          {player.photo ? (
+            <img
+              src={player.photo}
+              alt={`${player.first_name} ${player.last_name}`}
+              className="player-card-photo"
+            />
+          ) : (
+            player.is_captain && <div className="player-card-star">⭐</div>
+          )}
+
           <Typography variant="h6">
             {player.first_name} {player.last_name}
-            {player.is_captain && ' ⭐'}
           </Typography>
 
           <Typography>Posición: {player.position}</Typography>
           <Typography>Camiseta: {player.tshirt_number}</Typography>
+          <Typography>Selección: {player.national_team?.country || '-'}</Typography>
           <Typography>Club: {player.current_club}</Typography>
           <Typography>Fecha de nacimiento: {player.birthdate || '-'}</Typography>
           <Typography>Peso: {player.weight || '-'}</Typography>
           <Typography>Altura: {player.height || '-'}</Typography>
         </CardContent>
-
+        
+        {!isPublic && (
         <CardActions>
           <Button size="small" onClick={() => onEdit(player)}>
             Editar
@@ -51,7 +62,9 @@ function PlayerCard({ player, onEdit, onDelete }) {
             Ver estadísticas
           </Button>
         </CardActions>
-      </Card>
+         
+        )}
+        </Card>
 
       <Dialog open={openStats} onClose={() => setOpenStats(false)} fullWidth maxWidth="sm">
           <DialogTitle
