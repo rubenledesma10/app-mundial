@@ -67,13 +67,8 @@ const Navbar = () => {
           {/* LOGUEADO COMO USER COMÚN */}
           {token && user?.rol === 'user' && (
             <>
-              <Button
-                color="success"
-                variant="contained"
-                disabled
-                sx={{ color: '#fff !important' }}
-              >
-                Estadísticas
+              <Button color="inherit" component={Link} to="/estadisticas">
+                ESTADÍSTICAS
               </Button>
               <Button color="inherit" component={Link} to="/perfil">
                 MIS DATOS
