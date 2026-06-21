@@ -8,13 +8,8 @@ import Registro from './pages/Registro';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminRegistro from './pages/AdminRegistro';
 import AdminEditarUsuario from './pages/AdminEditarUsuario';
-
-const Home = () => (
-  <div style={{ padding: '40px', textAlign: 'center' }}>
-    <h1>🏠 Home Pública (Mundial 2026)</h1>
-    <p>Sección libre. Usá la barra de navegación de arriba para interactuar.</p>
-  </div>
-);
+import HomePublic from './pages/HomePublic';
+import HomePrivate from './pages/HomePrivate';
 
 function App() {
   return (
@@ -25,9 +20,14 @@ function App() {
         <Routes>
           {/* rutas publicas */}
           <Route path="/players" element={<Players />} />
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<HomePublic />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Registro />} />
+
+          {/* Privadas para cualquier usuario autenticado */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/home" element={<HomePrivate />} />
+          </Route>
 
           {/* rutas privadas, solo para admin */}
           <Route element={<ProtectedRoute allowedRoles={['admin']} />}>

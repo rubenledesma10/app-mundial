@@ -25,8 +25,8 @@ const Navbar = () => {
 
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           {/* Botón siempre visible */}
-          <Button color="inherit" component={Link} to="/">
-            Players
+          <Button color="inherit" component={Link} to={token ? '/home' : '/'}>
+            Home
           </Button>
 
           {/*  NO LOGUEADO */}
