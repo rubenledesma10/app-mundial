@@ -118,7 +118,7 @@ def login():
 @jwt_required()
 def get_current_user_profile():
     try:
-        # 🟢 get_jwt_identity() recupera el ID del usuario desde el Token JWT
+        #get_jwt_identity() recupera el ID del usuario desde el Token JWT
         current_user_id = get_jwt_identity()
         user = User.query.get(current_user_id)
         

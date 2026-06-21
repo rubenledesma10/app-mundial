@@ -25,7 +25,11 @@ const Navbar = () => {
 
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           {/* Botón siempre visible */}
-          <Button color="inherit" component={Link} to={token ? '/home' : '/'}>
+          <Button
+            color="inherit"
+            component={Link}
+            to={!token ? '/' : user?.rol === 'admin' ? '/admin-home' : '/home'}
+          >
             Home
           </Button>
 
@@ -49,15 +53,10 @@ const Navbar = () => {
           {/* LOGUEADO COMO ADMIN */}
           {token && user?.rol === 'admin' && (
             <>
-              <Button
-                color="inherit" component={Link} to="/admin">
+              <Button color="inherit" component={Link} to="/admin">
                 CRUD Usuarios
               </Button>
 
-              <Button color="inherit" component={Link} to="/card">
-                CRUD Jugadores
-              </Button>
-              
               <Button color="error" variant="outlined" onClick={handleLogout}>
                 Cerrar Sesión
               </Button>
@@ -70,9 +69,7 @@ const Navbar = () => {
               <Button color="inherit" component={Link} to="/estadisticas">
                 ESTADÍSTICAS
               </Button>
-              <Button color="inherit" component={Link} to="/players">
-                FILTROS
-              </Button>
+
               <Button color="inherit" component={Link} to="/perfil">
                 MIS DATOS
               </Button>

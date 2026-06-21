@@ -224,15 +224,16 @@ def toggle_user_status(user_id):
         if not user:
             return jsonify({'message': 'User not found'}), 404
 
-        if str(user.id) == get_jwt_identity():
+        if str(user.id) == str(get_jwt_identity()):
             return jsonify({'message': 'You cannot deactivate your own account'}), 400
 
         user.is_active = not user.is_active
-        
         db.session.commit()
 
+        accion = "activated" if user.is_active else "deactivated"
+
         return jsonify({
-            'message': 'Status updated successfully',
+            'message': f'User {accion} successfully',
             'is_active': user.is_active
         }), 200
 
